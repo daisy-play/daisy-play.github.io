@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<title>吃飯貓接接樂</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Huninn&display=swap">
+<style>
+:root{--ink:#5a3a22;--soft:#8a6a4e;--accent:#ff8a3d;--accent-dark:#c95a14;--card:#fffaf0;--line:#5a3a22;--chip:#ffefd2;--green:#5cbf6a;--green-dark:#2f8a42;color-scheme:light}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:#ffe6bd;color:var(--ink);font-family:"Huninn","PingFang TC","Microsoft JhengHei","Noto Sans TC",sans-serif;overflow:hidden;touch-action:none;-webkit-user-select:none;user-select:none}
+#wrap{position:relative;width:100%;max-width:480px;height:100%;margin:0 auto;overflow:hidden}
+canvas{display:block;width:100%;height:100%}
+
+/* 遊戲中的分數和愛心 */
+#hud{position:absolute;top:calc(12px + env(safe-area-inset-top,0px));left:12px;right:12px;display:flex;justify-content:space-between;align-items:center;pointer-events:none}
+.pill{display:inline-flex;align-items:center;gap:6px;padding:5px 14px;background:var(--card);border:3px solid var(--line);border-radius:999px;box-shadow:0 3px 0 var(--line);font-size:19px;font-weight:700;line-height:1.3}
+#lives{font-size:17px;letter-spacing:1px}
+#wrap:has(.overlay:not(.hidden)) #hud{visibility:hidden}
+
+/* 開始、結束畫面 */
+.overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:58px 18px 34px;background:rgba(255,246,226,.25)}
+.card{position:relative;width:100%;max-width:340px;padding:0 20px 20px;background:var(--card);border:4px solid var(--line);border-radius:30px;box-shadow:0 7px 0 var(--line);text-align:center;display:flex;flex-direction:column;align-items:center;gap:10px}
+/* 卡片上下的 emoji 花邊 */
+.lace{align-self:stretch;margin:0 -20px;padding:7px 0;background:#ffd98f;border-bottom:3px dashed var(--line);border-radius:25px 25px 0 0;font-size:17px;line-height:1.2;letter-spacing:5px;white-space:nowrap;overflow:hidden}
+.card h1{font-size:30px;font-weight:700;line-height:1.2;letter-spacing:.03em}
+.card p{font-size:15px;line-height:1.6;color:var(--soft)}
+.big{font-size:72px;line-height:1.05}
+.bob{animation:bob 1.5s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(-7px) rotate(4deg)}}
+.chips{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;list-style:none}
+.chips li{padding:3px 10px;background:var(--chip);border:2px solid var(--line);border-radius:999px;font-size:15px;font-weight:700;white-space:nowrap}
+.btn{font:inherit;font-size:21px;font-weight:700;padding:11px 30px;margin:4px 0 7px;color:#fff;background:var(--accent);border:4px solid var(--line);border-radius:999px;box-shadow:0 6px 0 var(--line);cursor:pointer;text-shadow:0 2px 0 var(--accent-dark);transition:transform .08s,box-shadow .08s}
+.btn:hover{background:#ff9a54}
+.btn:active{transform:translateY(5px);box-shadow:0 1px 0 var(--line)}
+.btn:focus-visible{outline:3px solid var(--green);outline-offset:3px}
+.rank{padding:4px 16px;background:var(--green);border:3px solid var(--line);border-radius:12px;color:#fff;font-size:18px;font-weight:700;text-shadow:0 2px 0 var(--green-dark);transform:rotate(-2deg)}
+.total{font-size:18px;font-weight:700;line-height:1.1}
+.total b{font-size:50px;color:var(--accent-dark)}
+.best{font-size:15px;color:var(--soft)}
+.best b{color:var(--ink)}
+#newBest{display:inline-block;margin-left:6px;padding:0 8px;background:#ffe27a;border:2px solid var(--line);border-radius:8px;color:var(--ink);font-weight:700}
+.hidden{display:none!important}
+
+/* 回首頁 */
+.home{position:absolute;top:calc(12px + env(safe-area-inset-top,0px));left:12px;padding:7px 14px;background:var(--card);border:3px solid var(--line);border-radius:999px;box-shadow:0 3px 0 var(--line);font-size:16px;font-weight:700;color:var(--ink);text-decoration:none}
+.home:active{transform:translateY(2px);box-shadow:0 1px 0 var(--line)}
+.home:focus-visible{outline:3px solid var(--green);outline-offset:2px}
+
+#credit{position:absolute;bottom:5px;left:0;width:100%;text-align:center;pointer-events:none}
+#credit span{padding:1px 10px;background:rgba(255,250,240,.88);border-radius:999px;font-size:12px;color:var(--soft)}
+
+/* 破紀錄的彩帶 */
+#confetti{position:absolute;inset:0;z-index:2;overflow:hidden;pointer-events:none}
+#confetti span{position:absolute;top:-40px;animation:fall 2.6s ease-in forwards}
+@keyframes fall{to{transform:translateY(110vh) rotate(420deg)}}
+@media (prefers-reduced-motion:reduce){.bob{animation:none}#confetti{display:none}}
+</style>
+</head>
+<body>
+<div id="wrap">
+  <canvas id="c"></canvas>
+  <div id="hud"><span class="pill">🍚 <span id="score">0 分</span></span><span class="pill" id="lives">❤️❤️❤️❤️❤️</span></div>
+
+  <div id="start" class="overlay">
+    <a class="home" href="../">‹ 回首頁</a>
+    <div class="card">
+      <div class="lace" aria-hidden="true">🐟🍙🍤🍗🐾🐟🍙🍤🍗🐾🐟🍙</div>
+      <div class="big bob">🐱</div>
+      <h1>吃飯貓接接樂</h1>
+      <p>左右滑動，幫貓咪接住掉下來的食物！</p>
+      <ul class="chips">
+        <li>🐟🍙 +1</li><li>🍤 +2</li><li>🍗 +3</li>
+      </ul>
+      <p>漏接或吃到 🌶️ 會扣一顆愛心</p>
+      <button id="startBtn" class="btn">🍽️ 開始吃飯</button>
+    </div>
+  </div>
+
+  <div id="over" class="overlay hidden">
+    <a class="home" href="../">‹ 回首頁</a>
+    <div id="confetti" aria-hidden="true"></div>
+    <div class="card">
+      <div class="lace" aria-hidden="true">🐾🍚🐾🍚🐾🍚🐾🍚🐾🍚🐾🍚</div>
+      <div id="overCat" class="big bob">😸</div>
+      <h1>吃飽了！</h1>
+      <div id="rank" class="rank"></div>
+      <div class="total"><b id="final">0</b> 分</div>
+      <ul id="tally" class="chips"></ul>
+      <div class="best">最高紀錄 <b id="best">0</b> 分<span id="newBest" class="hidden">🎉 新紀錄！</span></div>
+      <button id="againBtn" class="btn">🍚 再吃一次</button>
+    </div>
+  </div>
+
+  <div id="credit"><span>© Daisy的遊戲室</span></div>
+</div>
+
+<script>const cv=document.getElementById("c"),ctx=cv.getContext("2d"),$=t=>document.getElementById(t),FONT='"Huninn","PingFang TC","Microsoft JhengHei","Noto Sans TC",sans-serif',EMOJI='"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif',calm=!!window.matchMedia&&matchMedia("(prefers-reduced-motion:reduce)").matches;let W=0,H=0,D=1;const cat={x:0,y:0,tx:0,mouth:0},GOOD=[{e:"🐟",p:1,w:5},{e:"🍙",p:1,w:4},{e:"🍤",p:2,w:2},{e:"🍗",p:3,w:1}],RANKS=[[100,"👑 貓界吃飯之神"],[70,"🏆 大胃王貓咪"],[45,"😋 貪吃小胖貓"],[20,"😺 認真吃飯貓"],[0,"🐣 小鳥胃貓咪"]],LIVES=5;let items=[],popups=[],sparks=[],got={},score=0,lives=5,best=0,running=!1,spawnT=0,elapsed=0,last=0,shake=0,keyDir=0,streak=0,hotT=0,sadT=0,flash=0,now=0;try{best=+localStorage.getItem("eatcat-best")||0}catch(t){}const sprites={};function sprite(t,e){const a=t+e;if(sprites[a])return sprites[a];const n=document.createElement("canvas"),o=Math.ceil(1.5*e);n.width=n.height=o*D;const s=n.getContext("2d");return s.scale(D,D),s.font=e+"px "+EMOJI,s.textAlign="center",s.textBaseline="middle",s.fillText(t,o/2,o/2+.04*e),n.box=o,sprites[a]=n}function stamp(t,e,a,n,o,s,c,i){const l=sprite(e,a),r=l.box;t.save(),t.translate(n,o),s&&t.rotate(s),c&&t.scale(c,i||c),t.drawImage(l,-r/2,-r/2,r,r),t.restore()}let groundDay=null,groundNight=null,groundTop=0;const SCENERY=[["🌳",.1,-98,50],["🌲",.26,-92,34],["🏡",.74,-94,44],["🌳",.93,-102,40]],FLOWERS=[["🌷",.06],["🌼",.2],["🌿",.34],["🌻",.5],["🌿",.63],["🌷",.8],["🌼",.95]];function buildGround(){const t=Math.ceil(.26*H+70);groundTop=H-t;const e=document.createElement("canvas");e.width=W*D,e.height=t*D;const a=e.getContext("2d");a.scale(D,D);const n=e=>t+e;a.fillStyle="#a8e088",a.beginPath(),a.ellipse(.25*W,n(-120),.62*W,48,0,0,7),a.fill(),a.fillStyle="#93d576",a.beginPath(),a.ellipse(.82*W,n(-114),.55*W,52,0,0,7),a.fill(),a.fillStyle="#7ec964",a.fillRect(0,n(-116),W,116);for(const[t,e,o,s]of SCENERY)stamp(a,t,s,W*e,n(o-.2*s));for(const[t,e]of FLOWERS)stamp(a,t,18,W*e,n(-96));const o=20,s=n(-84);for(let t=0;t*o<W+o;t++){a.fillStyle=t%2?"#ff8e7c":"#fff4e2",a.beginPath(),a.arc(t*o+10,s,10,Math.PI,0),a.fill();for(let e=0;e<5;e++)a.fillStyle=(t+e)%2?"#fff4e2":"#ff8e7c",a.fillRect(t*o,s+e*o,o,o)}groundDay=e;const c=document.createElement("canvas");c.width=e.width,c.height=e.height;const i=c.getContext("2d");i.drawImage(e,0,0),i.globalCompositeOperation="source-atop",i.fillStyle="rgba(30,28,90,.55)",i.fillRect(0,0,c.width,c.height),groundNight=c}function resize(){const t=cv.getBoundingClientRect();D=Math.min(window.devicePixelRatio||1,2.5),W=t.width,H=t.height,cv.width=W*D,cv.height=H*D,ctx.setTransform(D,0,0,D,0,0),cat.y=H-104,running||(cat.x=cat.tx=W/2),cat.x=cat.tx=Math.min(Math.max(cat.tx,38),W-38);for(const t in sprites)delete sprites[t];W&&H&&buildGround()}function pickGood(){let t=GOOD.reduce((t,e)=>t+e.w,0),e=Math.random()*t;for(const t of GOOD)if((e-=t.w)<0)return t;return GOOD[0]}function spawn(){const t=Math.random()<Math.min(.15+elapsed/200,.35)?{e:"🌶️",p:0,bad:!0}:{...pickGood()};t.x=26+Math.random()*(W-52),t.y=-30,t.vy=(190+3.3*elapsed)*(.85+.3*Math.random()),t.rot=3*(Math.random()-.5),t.a=0,items.push(t)}function pop(t,e,a,n,o){popups.push({x:t,y:e,t:a,c:n,big:o,life:o?1.1:.8})}function hud(){$("score").textContent=score+" 分";const t=Math.max(lives,0);$("lives").textContent="❤️".repeat(t)+"💔".repeat(5-t)}function pulse(t,e){const a=$(t);a.animate&&!calm&&a.animate([{transform:"scale(1)"},{transform:"scale("+e+")"},{transform:"scale(1)"}],{duration:220})}function burst(t,e,a,n,o){for(let s=0;s<n&&sparks.length<70;s++){const n=6.28*Math.random(),c=o*(.5+.7*Math.random());sparks.push({e:a[s%a.length],x:t,y:e,vx:Math.cos(n)*c,vy:Math.sin(n)*c-.4*o,r:0,vr:6*(Math.random()-.5),life:.65,max:.65,s:16+8*Math.random()})}}function update(t){elapsed+=t,spawnT-=t,spawnT<=0&&(spawn(),spawnT=Math.max(.35,.8-.011*elapsed)),keyDir&&(cat.tx=Math.min(Math.max(cat.tx+520*keyDir*t,38),W-38)),cat.x+=(cat.tx-cat.x)*Math.min(1,14*t),cat.mouth=Math.max(0,cat.mouth-4*t);for(let e=items.length-1;e>=0;e--){const a=items[e];a.y+=a.vy*t,a.a+=a.rot*t,Math.abs(a.x-cat.x)<48&&Math.abs(a.y-(cat.y-8))<40?(items.splice(e,1),a.bad?(lives--,shake=.3,streak=0,hotT=.7,flash=.3,pop(a.x,a.y-20,"好辣！","#e5352f"),burst(cat.x,cat.y-20,["🔥","💨"],7,190),pulse("lives",1.2),navigator.vibrate&&navigator.vibrate(80)):(score+=a.p,cat.mouth=1,streak++,got[a.e]=(got[a.e]||0)+1,pop(a.x,a.y-20,"+"+a.p,"#e0620f"),burst(a.x,a.y,a.p>=3?["🌟","✨"]:a.p>=2?["⭐","✨"]:["✨"],3+2*a.p,150),pulse("score",1.18),streak%5==0&&pop(W/2,.3*H,"🔥 "+streak+" 連接！","#e0620f",!0)),hud()):a.y>H+30&&(items.splice(e,1),a.bad||(lives--,shake=.2,streak=0,sadT=.6,pop(a.x,H-100,"掉了…","#7a6a5e"),burst(a.x,H-40,["💦"],4,120),pulse("lives",1.2),hud()))}for(let e=popups.length-1;e>=0;e--){const a=popups[e];a.life-=t,a.y-=(a.big?14:40)*t,a.life<=0&&popups.splice(e,1)}lives<=0&&end()}function fx(t){shake=Math.max(0,shake-t),hotT=Math.max(0,hotT-t),sadT=Math.max(0,sadT-t),flash=Math.max(0,flash-t);for(let e=sparks.length-1;e>=0;e--){const a=sparks[e];a.life-=t,a.life<=0?sparks.splice(e,1):(a.x+=a.vx*t,a.y+=a.vy*t,a.vy+=420*t,a.r+=a.vr*t)}}window.addEventListener("resize",resize);const SKY=[[0,[191,232,255],[255,244,214]],[.4,[127,207,255],[223,245,255]],[.72,[255,154,118],[255,220,160]],[1,[32,38,90],[106,79,148]]],clamp=t=>Math.max(0,Math.min(1,t));function skyAt(t,e){for(let a=1;a<SKY.length;a++)if(t<=SKY[a][0]){const n=SKY[a-1],o=SKY[a],s=(t-n[0])/(o[0]-n[0]);return"rgb("+n[e].map((t,a)=>Math.round(t+(o[e][a]-t)*s)).join(",")+")"}return"rgb("+SKY[3][e].join(",")+")"}const STARS=[[.08,.1],[.22,.2],[.36,.08],[.5,.17],[.64,.1],[.9,.2],[.14,.32],[.42,.28],[.6,.34],[.94,.36],[.3,.4],[.72,.24]];function drawSky(t){const e=ctx.createLinearGradient(0,0,0,.8*H);e.addColorStop(0,skyAt(t,1)),e.addColorStop(1,skyAt(t,2)),ctx.fillStyle=e,ctx.fillRect(-20,-20,W+40,H+40);const a=clamp((t-.72)/.2);a>0&&STARS.forEach(([t,e],n)=>{ctx.globalAlpha=a*(.55+.45*Math.sin(.003*now+1.7*n)),stamp(ctx,n%3?"✨":"⭐",n%3?16:13,W*t,H*e)});const n=Math.min(t/.82,1);ctx.globalAlpha=1-clamp((t-.68)/.14),ctx.globalAlpha>0&&stamp(ctx,"☀️",52,W*(.14+.72*n),H*(.34-.2*Math.sin(Math.PI*n))),ctx.globalAlpha=clamp((t-.7)/.14),ctx.globalAlpha>0&&stamp(ctx,"🌙",46,.8*W,H*(.34-.18*clamp((t-.7)/.3))),ctx.globalAlpha=.92-.5*a,[[.18,.2,52,9],[.62,.3,40,6],[.88,.14,46,12]].forEach(([t,e,a,n])=>{stamp(ctx,"☁️",a,(W*t+.001*now*n)%(W+3*a)-1.5*a,H*e)}),ctx.globalAlpha=1,groundDay&&(ctx.drawImage(groundDay,0,groundTop,W,H-groundTop),a>0&&(ctx.globalAlpha=a,ctx.drawImage(groundNight,0,groundTop,W,H-groundTop),ctx.globalAlpha=1))}function catFace(){return hotT>0?"🙀":sadT>0?"😿":cat.mouth>.2?streak>=5?"😻":"😸":"🐱"}function draw(){if(!W||!H)return;ctx.save(),shake>0&&!calm&&ctx.translate(12*(Math.random()-.5)*shake/.3,0),drawSky(Math.min(elapsed/60,1));for(const t of items)ctx.fillStyle=t.bad?"rgba(255,70,50,.34)":"rgba(255,255,255,.6)",ctx.beginPath(),ctx.arc(t.x,t.y,25,0,7),ctx.fill(),stamp(ctx,t.e,36,t.x,t.y,t.a);ctx.fillStyle="rgba(90,40,20,.25)",ctx.beginPath(),ctx.ellipse(cat.x,cat.y+39,35,8,0,0,7),ctx.fill();const t=Math.max(-.25,Math.min(.25,.006*(cat.tx-cat.x))),e=running?1.5*Math.sin(.008*now):0;stamp(ctx,catFace(),76,cat.x,cat.y+e,t,1+.2*cat.mouth,1+.1*cat.mouth);for(const t of sparks)ctx.globalAlpha=clamp(t.life/t.max*1.5),stamp(ctx,t.e,4*Math.round(t.s/4),t.x,t.y,t.r);ctx.globalAlpha=1,ctx.textAlign="center",ctx.textBaseline="middle",ctx.lineJoin="round";for(const t of popups){const e=t.big?30:24;ctx.globalAlpha=clamp(t.life/.4),ctx.font="bold "+e+"px "+FONT,ctx.lineWidth=.26*e,ctx.strokeStyle="#fffaf0",ctx.strokeText(t.t,t.x,t.y),ctx.fillStyle=t.c,ctx.fillText(t.t,t.x,t.y)}ctx.globalAlpha=1,ctx.restore(),flash>0&&(ctx.fillStyle="rgba(255,60,30,"+.55*flash+")",ctx.fillRect(0,0,W,H))}function loop(t){const e=Math.min(.05,(t-last)/1e3||0);last=t,now=t,running&&update(e),fx(e),draw(),requestAnimationFrame(loop)}function start(){resize(),items=[],popups=[],sparks=[],got={},score=0,lives=5,elapsed=0,spawnT=.6,shake=0,streak=0,hotT=0,sadT=0,flash=0,hud(),$("start").classList.add("hidden"),$("over").classList.add("hidden"),$("confetti").innerHTML="",running=!0}function end(){running=!1,shake=0,items=[],popups=[],cat.tx=cat.x;const t=score>best;if(t){best=score;try{localStorage.setItem("eatcat-best",best)}catch(t){}}if($("final").textContent=score,$("best").textContent=best,$("overCat").textContent=t?"😻":"😸",$("newBest").classList.toggle("hidden",!t),$("rank").textContent=RANKS.find(t=>score>=t[0])[1],$("tally").innerHTML=GOOD.map(t=>"<li>"+t.e+" ×"+(got[t.e]||0)+"</li>").join(""),t){let t="";const e=["🎉","🎊","⭐","🐟","🍙","🍗","🍤"];for(let a=0;a<22;a++)t+='<span style="left:'+96*Math.random()+"%;font-size:"+(18+14*Math.random())+"px;animation-delay:"+.9*Math.random()+'s">'+e[a%e.length]+"</span>";$("confetti").innerHTML=t}$("over").classList.remove("hidden")}function aim(t){const e=cv.getBoundingClientRect();cat.tx=Math.min(Math.max(t.clientX-e.left,38),W-38)}cv.addEventListener("pointerdown",aim),cv.addEventListener("pointermove",t=>{("mouse"===t.pointerType||t.buttons||t.pressure>0)&&aim(t)}),window.addEventListener("keydown",t=>{"ArrowLeft"===t.key&&(keyDir=-1),"ArrowRight"===t.key&&(keyDir=1)}),window.addEventListener("keyup",t=>{("ArrowLeft"===t.key&&keyDir<0||"ArrowRight"===t.key&&keyDir>0)&&(keyDir=0)}),document.addEventListener("visibilitychange",()=>{last=performance.now()}),$("startBtn").onclick=start,$("againBtn").onclick=start,resize(),hud(),requestAnimationFrame(loop);</script>
+</body>
+</html>

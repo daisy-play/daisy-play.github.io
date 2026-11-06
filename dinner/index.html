@@ -2,6 +2,11 @@
 <html lang="zh-Hant">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>
+.homeLink { position: absolute; top: calc(var(--u) * 6); left: calc(var(--u) * 16); padding: calc(var(--u) * 30) calc(var(--u) * 24);
+  font-family: var(--font); font-size: calc(var(--u) * 34); color: #6c6a94; text-decoration: none; }
+.homeLink:focus-visible { outline: calc(var(--u) * 4) solid currentColor; border-radius: calc(var(--u) * 14); }
+</style>
 <title>放飯時間</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -112,6 +117,7 @@ body {
     <canvas id="cv" aria-label="放飯遊戲畫面"></canvas>
 
     <div id="startScreen" class="veil">
+      <a class="homeLink" href="../">‹ 回首頁</a>
       <h1>放飯時間！</h1>
       <div class="blocks" aria-hidden="true"><span>D</span><span>I</span><span>N</span><span>N</span><span>E</span><span>R</span></div>
       <img id="startCat" alt="胖橘">
@@ -127,6 +133,7 @@ body {
     </div>
 
     <div id="endScreen" class="veil" hidden>
+      <a class="homeLink" href="../">‹ 回首頁</a>
       <img id="endCat" alt="吃得圓滾滾的胖橘">
       <div class="card">
         <p class="timeup" id="reached"></p>

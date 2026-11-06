@@ -2,6 +2,11 @@
 <html lang="zh-Hant">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>
+.homeLink { position: absolute; top: calc(var(--u) * 6); left: calc(var(--u) * 16); padding: calc(var(--u) * 30) calc(var(--u) * 24);
+  font-family: var(--font); font-size: calc(var(--u) * 34); color: #6e4c38; text-decoration: none; }
+.homeLink:focus-visible { outline: calc(var(--u) * 4) solid currentColor; border-radius: calc(var(--u) * 14); }
+</style>
 <title>別再喵了！</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -109,6 +114,7 @@ body {
     <canvas id="cv" aria-label="幫藝術貓梳毛的遊戲畫面"></canvas>
 
     <div id="startScreen" class="veil">
+      <a class="homeLink" href="../">‹ 回首頁</a>
       <h1>別再<b>喵</b>了！</h1>
       <p class="tag">幫藝術貓梳梳毛</p>
       <img id="startCat" alt="藝術貓">
@@ -124,6 +130,7 @@ body {
     </div>
 
     <div id="endScreen" class="veil" hidden>
+      <a class="homeLink" href="../">‹ 回首頁</a>
       <div class="endTop">
         <img id="endCat" alt="梳得很開心的藝術貓">
         <figure class="art">

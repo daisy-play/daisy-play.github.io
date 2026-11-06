@@ -2,6 +2,11 @@
 <html lang="zh-Hant">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>
+.homeLink { position: absolute; top: calc(var(--u) * 6); left: calc(var(--u) * 16); padding: calc(var(--u) * 30) calc(var(--u) * 24);
+  font-family: var(--font); font-size: calc(var(--u) * 34); color: #9b7a5c; text-decoration: none; }
+.homeLink:focus-visible { outline: calc(var(--u) * 4) solid currentColor; border-radius: calc(var(--u) * 14); }
+</style>
 <title>幫貓鏟屎</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -102,6 +107,7 @@ body {
     <canvas id="cv" aria-label="貓砂盆遊戲畫面"></canvas>
 
     <div id="startScreen" class="veil">
+      <a class="homeLink" href="../">‹ 回首頁</a>
       <h1>幫貓鏟屎</h1>
       <p class="sub">60 秒，讓貓主子滿意</p>
       <img id="startCat" alt="手作貓">
@@ -116,6 +122,7 @@ body {
     </div>
 
     <div id="endScreen" class="veil" hidden>
+      <a class="homeLink" href="../">‹ 回首頁</a>
       <img id="endCat" alt="手作貓">
       <div class="card">
         <p class="timeup">時間到！</p>
