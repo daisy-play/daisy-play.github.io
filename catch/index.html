@@ -78,6 +78,17 @@ canvas{display:block;width:100%;height:100%}
 @keyframes fall{to{transform:translateY(110vh) rotate(420deg)}}
 @media (prefers-reduced-motion:reduce){.bob{animation:none}#confetti{display:none}}
 </style>
+<script data-goatcounter="https://daisy-play.goatcounter.com/count" data-goatcounter-settings='{"allow_frame": true}' async src="https://gc.zgo.at/count.js"></script>
+<script>
+document.addEventListener("click", function (e) {
+  var b = e.target.closest && e.target.closest("#go,#again,#cardAgain,#startBtn,#againBtn");
+  if (!b || b.disabled || location.hash === "#test") return;
+  (function send(n) {
+    if (window.goatcounter && window.goatcounter.count) window.goatcounter.count({ path: "開始玩：吃飯貓接接樂", title: "開始玩：吃飯貓接接樂", event: true });
+    else if (n < 20) setTimeout(function () { send(n + 1); }, 500);
+  })(0);
+}, true);
+</script>
 </head>
 <body>
 <div id="wrap">

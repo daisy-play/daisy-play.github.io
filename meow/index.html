@@ -2,6 +2,17 @@
 <html lang="zh-Hant">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script data-goatcounter="https://daisy-play.goatcounter.com/count" data-goatcounter-settings='{"allow_frame": true}' async src="https://gc.zgo.at/count.js"></script>
+<script>
+document.addEventListener("click", function (e) {
+  var b = e.target.closest && e.target.closest("#go,#again,#cardAgain,#startBtn,#againBtn");
+  if (!b || b.disabled || location.hash === "#test") return;
+  (function send(n) {
+    if (window.goatcounter && window.goatcounter.count) window.goatcounter.count({ path: "開始玩：別再喵了", title: "開始玩：別再喵了", event: true });
+    else if (n < 20) setTimeout(function () { send(n + 1); }, 500);
+  })(0);
+}, true);
+</script>
 <style>
 .homeLink { position: absolute; top: calc(var(--u) * 6); left: calc(var(--u) * 16); padding: calc(var(--u) * 30) calc(var(--u) * 24);
   font-family: var(--font); font-size: calc(var(--u) * 34); color: #6e4c38; text-decoration: none; }
