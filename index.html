@@ -149,6 +149,14 @@ footer { margin-top: 30px; text-align: center; color: var(--soft); }
 .channels a:hover { border-color: var(--red); color: var(--red); }
 .channels a:focus-visible { outline: 3px solid var(--red); outline-offset: 2px; }
 .copy { margin: 0; font-size: 14px; line-height: 1.8; }
+/* 脆的追蹤按鈕 */
+.threads-wrap { margin: 0 0 14px; }
+.threads {
+  display: inline-block; padding: 7px 20px; border: 2px solid var(--line); border-radius: 999px;
+  background: var(--card); color: var(--ink); font-size: 15px; text-decoration: none; transition: border-color .18s ease, color .18s ease;
+}
+.threads:hover { border-color: var(--red); color: var(--red); }
+.threads:focus-visible { outline: 3px solid var(--red); outline-offset: 2px; }
 /* 贊助按鈕（綠界） */
 .coffee-wrap { margin: 0 0 18px; }
 .coffee {
@@ -297,7 +305,7 @@ footer { margin-top: 30px; text-align: center; color: var(--soft); }
     <a class="game" href="color/">
       <img src="images/color.jpg" width="720" height="597" alt="拿調色盤的藝術貓和顏料店牌子、色票和顏料罐">
       <div class="info">
-        <span class="by">藝術貓<span class="badge new">NEW</span><span class="badge">🔥 脆 3 萬+ 瀏覽</span></span>
+        <span class="by">藝術貓<span class="badge new">NEW</span><span class="badge">🔥 脆 5 萬+ 瀏覽</span></span>
         <h2>調色調調看</h2>
         <p>客人貓拿色卡來，用顏料調出一模一樣的顏色。玩到一半有新顏料到貨！</p>
         <span class="play">開始玩</span>
@@ -346,6 +354,7 @@ footer { margin-top: 30px; text-align: center; color: var(--soft); }
       <li><a href="https://www.youtube.com/@HandmadeCat" target="_blank" rel="noopener">手作貓</a></li>
       <li><a href="https://www.youtube.com/@EnglishCatStudio" target="_blank" rel="noopener">英語貓</a></li>
     </ul>
+    <p class="threads-wrap"><a class="threads" href="https://www.threads.com/@daisy._.log" target="_blank" rel="noopener">🎮 在 Threads 追蹤新遊戲</a></p>
     <p class="coffee-wrap"><a class="coffee" href="https://p.ecpay.com.tw/463A54A" target="_blank" rel="noopener">☕ 請開發貓貓喝杯咖啡</a></p>
     <p class="copy">© <span>藝術貓 ArtCat</span>・<span>旅遊貓 TravelCat</span>・<span>手作貓 HandmadeCat</span>・<span>英語貓 EnglishCat</span></p>
   </footer>
