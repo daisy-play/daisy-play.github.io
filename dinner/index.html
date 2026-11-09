@@ -7,6 +7,12 @@
   font-family: var(--font); font-size: calc(var(--u) * 34); color: #6c6a94; text-decoration: none; }
 .homeLink:focus-visible { outline: calc(var(--u) * 4) solid currentColor; border-radius: calc(var(--u) * 14); }
 </style>
+<style>
+.signrow { display: flex; align-items: center; justify-content: center; gap: calc(var(--u) * 18); flex-wrap: wrap; margin-top: calc(var(--u) * -6); }
+.coffee { font-family: var(--font); font-size: calc(var(--u) * 24); color: #6c6a94; text-decoration: none; line-height: 1.3;
+  padding: calc(var(--u) * 5) calc(var(--u) * 18); border: calc(var(--u) * 3) dashed currentColor; border-radius: 999px; }
+.coffee:focus-visible { outline: calc(var(--u) * 4) solid currentColor; outline-offset: calc(var(--u) * 3); }
+</style>
 <title>放飯時間</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -152,7 +158,7 @@ body {
         <button id="makeCard" class="btn alt">做分數卡</button>
         <button id="again" class="btn">再玩一次</button>
       </div>
-      <p class="sign">© 英語貓 EnglishCat</p>
+      <div class="signrow"><a class="coffee" href="https://p.ecpay.com.tw/463A54A" target="_blank" rel="noopener">☕ 請開發貓貓喝杯咖啡</a><p class="sign">© 英語貓 EnglishCat</p></div>
     </div>
 
     <div id="cardScreen" class="veil" hidden>
