@@ -42,6 +42,7 @@ main {
 }
 /* 最上面一條咖啡色的列：左邊小標語、右邊分享 */
 .topbar {
+  position: sticky; top: 0; z-index: 20; /* 往下捲時固定在最上面 */
   display: flex; align-items: center; justify-content: space-between; gap: 12px;
   padding: 10px max(20px, env(safe-area-inset-right, 0px)) 10px max(20px, env(safe-area-inset-left, 0px));
   background: #5a3d2e; color: #fff3d6;
@@ -56,6 +57,16 @@ main {
 .share svg { width: 18px; height: 18px; }
 .share:hover { background: rgba(255, 243, 214, .14); }
 .share:focus-visible { outline: 3px solid #fff3d6; outline-offset: 2px; }
+.bar-actions { display: flex; align-items: center; gap: 10px; flex: none; }
+/* 上方列的贊助按鈕：黃色，跟分享按鈕區分 */
+.bar-coffee {
+  display: inline-flex; align-items: center; gap: 5px; flex: none;
+  padding: 6px 14px; border: 2px solid #f2c94c; border-radius: 12px; background: #f2c94c;
+  color: #4f3a2d; font-size: 15px; text-decoration: none; white-space: nowrap; transition: background .18s ease, border-color .18s ease;
+}
+.bar-coffee:hover { background: #f7d873; border-color: #f7d873; }
+.bar-coffee:focus-visible { outline: 3px solid #fff3d6; outline-offset: 2px; }
+.c-short { display: none; }
 .toast {
   position: fixed; left: 50%; bottom: 28px; transform: translate(-50%, 20px); opacity: 0; pointer-events: none;
   padding: 10px 20px; border-radius: 999px; background: #5a3d2e; color: #fff3d6; font-size: 15px;
@@ -155,8 +166,12 @@ footer { margin-top: 30px; text-align: center; color: var(--soft); }
   h1 { font-size: 32px; }
   .plaque { padding: 12px 26px 10px; margin-top: 16px; }
   header p { margin-top: 14px; font-size: 14px; }
-  .topbar { padding-top: 8px; padding-bottom: 8px; }
-  .tag, .share { font-size: 14px; }
+  .topbar { gap: 8px; padding: 8px max(12px, env(safe-area-inset-right, 0px)) 8px max(12px, env(safe-area-inset-left, 0px)); }
+  .tag, .share, .bar-coffee { font-size: 14px; }
+  .share, .bar-coffee { padding: 5px 9px; }
+  .bar-actions { gap: 6px; }
+  .t-more, .c-long { display: none; }
+  .c-short { display: inline; }
   .games { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
   .game { border-width: 2px; border-radius: 16px; }
   .info { gap: 2px; padding: 10px 11px 12px; }
@@ -201,16 +216,21 @@ footer { margin-top: 30px; text-align: center; color: var(--soft); }
   padding: 4px 14px; border-radius: 999px;
   background: #ece0c9; color: var(--soft); font-size: 14px;
 }
+/* 很窄的手機：上方列只留貓掌 */
+@media (max-width: 369px) { .tag-text { display: none; } }
 @media (prefers-reduced-motion: reduce) { .game { transition: none; } .game:hover { transform: none; } }
 </style>
 </head>
 <body>
 <div class="topbar">
-  <span class="tag"><svg class="paw" viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="16" rx="5.4" ry="4.4"/><ellipse cx="5.4" cy="10" rx="2.2" ry="2.7"/><ellipse cx="9.6" cy="6.2" rx="2.2" ry="2.7"/><ellipse cx="14.4" cy="6.2" rx="2.2" ry="2.7"/><ellipse cx="18.6" cy="10" rx="2.2" ry="2.7"/></svg>貓咪頻道的紓壓小遊戲</span>
-  <button class="share" id="share" type="button" aria-label="分享這個網站">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V3M7 8l5-5 5 5"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg>
-    分享網站
-  </button>
+  <span class="tag"><svg class="paw" viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="16" rx="5.4" ry="4.4"/><ellipse cx="5.4" cy="10" rx="2.2" ry="2.7"/><ellipse cx="9.6" cy="6.2" rx="2.2" ry="2.7"/><ellipse cx="14.4" cy="6.2" rx="2.2" ry="2.7"/><ellipse cx="18.6" cy="10" rx="2.2" ry="2.7"/></svg><span class="tag-text"><span class="t-more">貓咪頻道的</span>紓壓小遊戲</span></span>
+  <div class="bar-actions">
+    <a class="bar-coffee" href="https://p.ecpay.com.tw/463A54A" target="_blank" rel="noopener" aria-label="請開發貓貓喝杯咖啡"><span aria-hidden="true">☕</span><span class="c-long">請開發貓貓喝杯咖啡</span><span class="c-short">請喝咖啡</span></a>
+    <button class="share" id="share" type="button" aria-label="分享這個網站">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V3M7 8l5-5 5 5"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg>
+      分享網站
+    </button>
+  </div>
 </div>
 
 <main>
