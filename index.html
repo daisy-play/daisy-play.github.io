@@ -114,6 +114,38 @@ footer { margin-top: 30px; text-align: center; color: var(--soft); }
   .channels { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
   .channels a { padding: 7px 0; font-size: 15px; }
 }
+/* 即將上架：不能點、封面淡一點、貼一條紙膠帶 */
+.soon-title { margin: 30px 0 14px; text-align: center; font-size: 20px; font-weight: 400; letter-spacing: .1em; color: var(--ink); }
+.soon-title span { display: inline-block; padding: 2px 18px; border-bottom: 2px dashed var(--line); }
+.game.soon { cursor: default; border-style: dashed; }
+.game.soon:hover { transform: none; border-color: var(--line); }
+.mystery {
+  position: relative; aspect-ratio: 720 / 597; overflow: hidden;
+  background: var(--tint) radial-gradient(rgba(185, 157, 116, .28) 1.5px, transparent 1.6px) 0 0 / 16px 16px;
+  border-bottom: 2px dashed var(--line);
+}
+.q {
+  position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+  width: 46%; aspect-ratio: 1; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--card); border: 3px dashed var(--line);
+  color: var(--line); font-size: clamp(48px, 9vw, 72px); font-weight: 700; line-height: 1;
+}
+.mystery .tape { top: 22%; }
+.tape {
+  position: absolute; left: 50%; top: 50%;
+  transform: translate(-50%, -50%) rotate(-6deg);
+  padding: 6px 22px;
+  background: rgba(247, 226, 160, .93);
+  box-shadow: 0 2px 4px rgba(79, 58, 45, .18);
+  color: var(--ink); font-size: 19px; letter-spacing: .12em; white-space: nowrap;
+}
+@media (max-width: 559px) { .tape { padding: 5px 16px; font-size: 16px; } .mystery .tape { top: 15%; } .q { width: 40%; top: 58%; } .soon-title { margin-top: 26px; font-size: 19px; } }
+.date {
+  margin-top: auto; align-self: flex-start;
+  padding: 4px 14px; border-radius: 999px;
+  background: #ece0c9; color: var(--soft); font-size: 14px;
+}
 @media (prefers-reduced-motion: reduce) { .game { transition: none; } .game:hover { transform: none; } }
 </style>
 </head>
@@ -174,6 +206,39 @@ footer { margin-top: 30px; text-align: center; color: var(--soft); }
         <span class="play">開始玩</span>
       </div>
     </a>
+  </div>
+
+  <h2 class="soon-title"><span>即將上架</span></h2>
+  <div class="games">
+    <div class="game soon">
+      <div class="mystery" style="--tint:#efe3cc"><span class="q">?</span><span class="tape">即將上架</span></div>
+      <div class="info">
+        <span class="by">藝術貓</span>
+        <h2>神秘新遊戲</h2>
+        <p>藝術貓的新遊戲會是什麼呢？上架那天就知道囉！</p>
+        <span class="date">11/9 上架</span>
+      </div>
+    </div>
+
+    <div class="game soon">
+      <div class="mystery" style="--tint:#e9e6d4"><span class="q">?</span><span class="tape">即將上架</span></div>
+      <div class="info">
+        <span class="by">手作貓</span>
+        <h2>神秘新遊戲</h2>
+        <p>手作貓的新遊戲會是什麼呢？上架那天就知道囉！</p>
+        <span class="date">11/11 上架</span>
+      </div>
+    </div>
+
+    <div class="game soon">
+      <div class="mystery" style="--tint:#e4e8e2"><span class="q">?</span><span class="tape">即將上架</span></div>
+      <div class="info">
+        <span class="by">旅遊貓</span>
+        <h2>神秘新遊戲</h2>
+        <p>旅遊貓的新遊戲會是什麼呢？上架那天就知道囉！</p>
+        <span class="date">11/13 上架</span>
+      </div>
+    </div>
   </div>
 
   <footer>
