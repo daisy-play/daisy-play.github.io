@@ -57,6 +57,7 @@ canvas{display:block;width:100%;height:100%}
 .home{position:absolute;top:calc(12px + env(safe-area-inset-top,0px));left:12px;padding:7px 14px;background:var(--card);border:3px solid var(--line);border-radius:999px;box-shadow:0 3px 0 var(--line);font-size:16px;font-weight:700;color:var(--ink);text-decoration:none}
 .home:active{transform:translateY(2px);box-shadow:0 1px 0 var(--line)}
 .home:focus-visible{outline:3px solid var(--green);outline-offset:2px}
+.home.more{background:var(--green-dark);border-color:var(--ink);color:#fff}
 
 /* 聲音開關：玩的時候在愛心下面，開始和結束畫面在右上角 */
 #mute{position:absolute;z-index:3;top:calc(60px + env(safe-area-inset-top,0px));right:12px;width:40px;height:40px;padding:0;display:flex;align-items:center;justify-content:center;background:var(--card);border:3px solid var(--line);border-radius:50%;box-shadow:0 3px 0 var(--line);font-size:18px;line-height:1;cursor:pointer;touch-action:manipulation}
@@ -111,7 +112,7 @@ document.addEventListener("click", function (e) {
   </div>
 
   <div id="over" class="overlay hidden">
-    <a class="home" href="../">‹ 回首頁</a>
+    <a class="home more" href="../">🎮 玩其他遊戲</a>
     <div id="confetti" aria-hidden="true"></div>
     <div class="card">
       <div class="lace" aria-hidden="true">🐾🍚🐾🍚🐾🍚🐾🍚🐾🍚🐾🍚</div>

@@ -17,6 +17,9 @@ document.addEventListener("click", function (e) {
 .homeLink { position: absolute; top: calc(var(--u) * 6); left: calc(var(--u) * 16); padding: calc(var(--u) * 30) calc(var(--u) * 24);
   font-family: var(--font); font-size: calc(var(--u) * 34); color: #9b7a5c; text-decoration: none; }
 .homeLink:focus-visible { outline: calc(var(--u) * 4) solid currentColor; border-radius: calc(var(--u) * 14); }
+/* 結束畫面：實心的「玩其他遊戲」，比回首頁明顯，浮在左上角不會把畫面撐高 */
+.homeLink.more { top: calc(var(--u) * 22); left: calc(var(--u) * 22); padding: calc(var(--u) * 13) calc(var(--u) * 28); border-radius: 999px;
+  background: #9b7a5c; color: #fff8ea; font-size: calc(var(--u) * 30); box-shadow: 0 calc(var(--u) * 4) 0 rgba(79, 58, 45, .25); z-index: 3; }
 </style>
 <style>
 .signrow { display: flex; align-items: center; justify-content: center; gap: calc(var(--u) * 18); flex-wrap: wrap; margin-top: calc(var(--u) * -6); }
@@ -139,7 +142,7 @@ body {
     </div>
 
     <div id="endScreen" class="veil" hidden>
-      <a class="homeLink" href="../">‹ 回首頁</a>
+      <a class="homeLink more" href="../">🎮 玩其他遊戲</a>
       <img id="endCat" alt="手作貓">
       <div class="card">
         <p class="timeup">時間到！</p>
