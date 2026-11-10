@@ -5,10 +5,16 @@
 <script data-goatcounter="https://daisy-play.goatcounter.com/count" data-goatcounter-settings='{"allow_frame": true}' async src="https://gc.zgo.at/count.js"></script>
 <script>
 document.addEventListener("click", function (e) {
-  var b = e.target.closest && e.target.closest("#go,#again,#cardAgain,#startBtn,#againBtn");
-  if (!b || b.disabled || location.hash === "#test") return;
+  if (!e.target.closest || location.hash === "#test") return;
+  var label;
+  if (e.target.closest('a[href*="ecpay.com.tw"]')) label = "按贊助：幫貓鏟屎";
+  else {
+    var b = e.target.closest("#go,#again,#cardAgain,#startBtn,#againBtn");
+    if (!b || b.disabled) return;
+    label = "開始玩：幫貓鏟屎";
+  }
   (function send(n) {
-    if (window.goatcounter && window.goatcounter.count) window.goatcounter.count({ path: "開始玩：幫貓鏟屎", title: "開始玩：幫貓鏟屎", event: true });
+    if (window.goatcounter && window.goatcounter.count) window.goatcounter.count({ path: label, title: label, event: true });
     else if (n < 20) setTimeout(function () { send(n + 1); }, 500);
   })(0);
 }, true);
@@ -22,9 +28,11 @@ document.addEventListener("click", function (e) {
   background: #9b7a5c; color: #fff8ea; font-size: calc(var(--u) * 30); box-shadow: 0 calc(var(--u) * 4) 0 rgba(79, 58, 45, .25); z-index: 3; }
 </style>
 <style>
-.signrow { display: flex; align-items: center; justify-content: center; gap: calc(var(--u) * 18); flex-wrap: wrap; margin-top: calc(var(--u) * -6); }
-.coffee { font-family: var(--font); font-size: calc(var(--u) * 24); color: #9b7a5c; text-decoration: none; line-height: 1.3;
-  padding: calc(var(--u) * 5) calc(var(--u) * 18); border: calc(var(--u) * 3) dashed currentColor; border-radius: 999px; }
+.signrow { display: flex; flex-direction: column; align-items: center; gap: calc(var(--u) * 8); margin-top: calc(var(--u) * 2); }
+.signrow .sign { margin: 0; }
+.coffee { font-family: var(--font); font-size: calc(var(--u) * 30); color: #9b7a5c; text-decoration: none; line-height: 1.3;
+  background: #fff8ea; padding: calc(var(--u) * 12) calc(var(--u) * 32); border: calc(var(--u) * 3) solid currentColor; border-radius: 999px;
+  box-shadow: 0 calc(var(--u) * 4) 0 rgba(79, 58, 45, .18); }
 .coffee:focus-visible { outline: calc(var(--u) * 4) solid currentColor; outline-offset: calc(var(--u) * 3); }
 </style>
 <title>幫貓鏟屎</title>
@@ -160,7 +168,7 @@ body {
         <button id="makeCard" class="btn alt">做分數卡</button>
         <button id="again" class="btn">再玩一次</button>
       </div>
-      <div class="signrow"><a class="coffee" href="https://p.ecpay.com.tw/463A54A" target="_blank" rel="noopener">☕ 請開發貓貓喝杯咖啡</a><p class="sign">© 手作貓 HandmadeCat</p></div>
+      <div class="signrow"><a class="coffee" href="https://p.ecpay.com.tw/463A54A" target="_blank" rel="noopener">☕ 喜歡的話，請開發貓貓喝杯咖啡</a><p class="sign">© 手作貓 HandmadeCat</p></div>
     </div>
 
     <div id="cardScreen" class="veil" hidden>
