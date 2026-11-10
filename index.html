@@ -550,8 +550,12 @@ document.addEventListener("click", function (e) {
     set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} },
   };
   const today = () => { const d = new Date(); return d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate(); };
-  // GoatCounter 的人數瀏覽器會存 4 小時 → 網址加上「每 5 分鐘換一次」的小尾巴，最多慢 5 分鐘左右
-  const cntURL = (path) => GC + "/counter/" + encodeURIComponent(path) + ".json?t=" + Math.floor(Date.now() / 300000);
+  // GoatCounter 的人數會被暫存 4 小時（伺服器那邊也存，而且不認不相干的網址尾巴）
+  // → 改用它認得的 start=日期：每 5 分鐘換一個 2000～2010 年之間的起始日（都早於開站，所以還是算全部），最多慢 5 分鐘左右
+  const cntURL = (path) => {
+    const d = new Date(Date.UTC(2000, 0, 1) + (Math.floor(Date.now() / 300000) % 3650) * 86400000);
+    return GC + "/counter/" + encodeURIComponent(path) + ".json?start=" + d.toISOString().slice(0, 10);
+  };
   // 統計程式（GoatCounter）是慢慢載入的：還沒載好就先等一下再記，最多等 15 秒
   const track = (path, title, tries = 0) => {
     if (window.goatcounter && window.goatcounter.count) window.goatcounter.count({ path, title, event: true });
