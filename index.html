@@ -663,9 +663,11 @@ document.addEventListener("click", function (e) {
     g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(.12, t + .005); g.gain.exponentialRampToValueAtTime(.0001, t + .1);
     o.connect(g); g.connect(ac.destination); o.start(t); o.stop(t + .12);
   };
-  let walking = false;
+  let walking = false, pawTracked = false;
   tag.addEventListener("click", () => {
     replay(tag, "boop");
+    // 隱藏彩蛋有多少人找到：打開首頁後第一次點才記，GoatCounter 搜「貓掌」
+    if (!pawTracked) { pawTracked = true; track("paw-egg", "黃色貓掌彩蛋"); }
     if (walking) return;
     walking = true; setTimeout(() => { walking = false; }, 900);
     const r = tag.querySelector(".paw").getBoundingClientRect();
