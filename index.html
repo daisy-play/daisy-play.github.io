@@ -233,9 +233,14 @@ footer { margin-top: 30px; text-align: center; color: var(--soft); }
 <script data-goatcounter="https://daisy-play.goatcounter.com/count" data-goatcounter-settings='{"allow_frame": true}' async src="https://gc.zgo.at/count.js"></script>
 <script>
 document.addEventListener("click", function (e) {
-  var a = e.target.closest && e.target.closest('a[href*="ecpay.com.tw"]');
+  if (!e.target.closest) return;
+  var a = e.target.closest('a[href*="ecpay.com.tw"], a[href*="threads.com"], a[href*="youtube.com"], #share'), label;
   if (!a) return;
-  var label = a.classList.contains("bar-coffee") ? "按贊助：首頁上方" : "按贊助：首頁下方";
+  // 11/10 加：分享網站、脆、YT 也記
+  if (a.id === "share") label = "按分享網站";
+  else if (a.href.indexOf("threads.com") >= 0) label = "按脆追蹤";
+  else if (a.href.indexOf("youtube.com") >= 0) label = "按YT：" + a.textContent.trim();
+  else label = a.classList.contains("bar-coffee") ? "按贊助：首頁上方" : "按贊助：首頁下方";
   if (window.goatcounter && window.goatcounter.count) window.goatcounter.count({ path: label, title: label, event: true });
 }, true);
 </script>

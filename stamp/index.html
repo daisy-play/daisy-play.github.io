@@ -26,6 +26,8 @@ document.addEventListener("click", function (e) {
 /* 結束畫面：實心的「玩其他遊戲」，比回首頁明顯，浮在左上角不會把畫面撐高 */
 .homeLink.more { top: calc(var(--u) * 22); left: calc(var(--u) * 22); padding: calc(var(--u) * 13) calc(var(--u) * 28); border-radius: 999px;
   background: #6e5a4c; color: #fff8ea; font-size: calc(var(--u) * 30); box-shadow: 0 calc(var(--u) * 4) 0 rgba(79, 58, 45, .25); z-index: 3; }
+/* 11/10：打開分數卡時藏起來，不然會蓋住分數卡的「‹ 返回」 */
+body:has(#cardScreen:not([hidden])) .homeLink.more { display: none; }
 </style>
 <style>
 .signrow { display: flex; flex-direction: column; align-items: center; gap: calc(var(--u) * 8); margin-top: calc(var(--u) * 2); }
