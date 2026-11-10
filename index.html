@@ -225,7 +225,8 @@ footer { margin-top: 30px; text-align: center; color: var(--soft); }
   background: #ece0c9; color: var(--soft); font-size: 14px;
 }
 /* 11/10 敲碗：即將上架的卡片按了碗會晃、叮叮響、冒貓掌（人數用 GoatCounter 記） */
-.knock-row { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; margin-top: 8px; }
+/* 人數固定在按鈕下面一行（字長短不同時四張卡才會對齊） */
+.knock-row { display: flex; flex-direction: column; align-items: flex-start; gap: 5px; margin-top: 8px; }
 .knock {
   display: inline-flex; align-items: center; gap: 4px; padding: 4px 13px;
   border: 0; border-radius: 999px; background: #d08a3c; color: #fff; font: inherit; font-size: 14px;
@@ -237,7 +238,7 @@ footer { margin-top: 30px; text-align: center; color: var(--soft); }
 .knock:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; }
 .knock .bowl { display: inline-block; }
 .knock.hit .bowl { animation: bowlShake .5s ease; }
-.knock-n { font-size: 12px; line-height: 1.4; color: var(--soft); }
+.knock-n { min-height: 1.4em; font-size: 12px; line-height: 1.4; color: var(--soft); white-space: nowrap; }
 .knock-n b { color: #a86a2a; font-weight: 700; }
 .game.soon.hit .q { animation: qHop .5s ease; }
 @keyframes bowlShake { 0%, 100% { transform: rotate(0); } 20% { transform: rotate(-22deg) translateY(-2px); } 45% { transform: rotate(18deg); } 70% { transform: rotate(-10deg); } 85% { transform: rotate(5deg); } }
@@ -549,7 +550,13 @@ document.addEventListener("click", function (e) {
     set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} },
   };
   const today = () => { const d = new Date(); return d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate(); };
-  const track = (path, title) => { if (window.goatcounter && window.goatcounter.count) window.goatcounter.count({ path, title, event: true }); };
+  // GoatCounter 的人數瀏覽器會存 4 小時 → 網址加上「每 5 分鐘換一次」的小尾巴，最多慢 5 分鐘左右
+  const cntURL = (path) => GC + "/counter/" + encodeURIComponent(path) + ".json?t=" + Math.floor(Date.now() / 300000);
+  // 統計程式（GoatCounter）是慢慢載入的：還沒載好就先等一下再記，最多等 15 秒
+  const track = (path, title, tries = 0) => {
+    if (window.goatcounter && window.goatcounter.count) window.goatcounter.count({ path, title, event: true });
+    else if (tries < 30) setTimeout(() => track(path, title, tries + 1), 500);
+  };
 
   // 聲音（按了才開，不會自己響）
   let AC = null;
@@ -578,11 +585,14 @@ document.addEventListener("click", function (e) {
     o.connect(lp); lp.connect(g); g.connect(ac.destination); o.start(t); o.stop(t + L + .05);
   };
   const replay = (el, cls) => { el.classList.remove(cls); void el.offsetWidth; el.classList.add(cls); };
-  const fx = (x, y, words) => words.forEach((w, i) => {
+  // group：同一顆按鈕連按時，先清掉上一次的字，才不會疊成一團；right：往右上飄（不蓋到上面的日期）
+  const fx = (x, y, words, group, right) => words.forEach((w, i) => {
+    if (group && i === 0) document.querySelectorAll('.pop-fx[data-g="' + group + '"]').forEach((e) => e.remove());
     const s = document.createElement("span");
     s.className = "pop-fx"; s.textContent = w;
+    if (group) s.dataset.g = group;
     s.style.left = x + "px"; s.style.top = (y - 10) + "px";
-    s.style.setProperty("--dx", ((i - (words.length - 1) / 2) * 34 + (Math.random() * 12 - 6)) + "px");
+    s.style.setProperty("--dx", (right ? right * (18 + i * 30) : (i - (words.length - 1) / 2) * 34) + (Math.random() * 12 - 6) + "px");
     s.style.setProperty("--rot", (Math.random() * 30 - 15) + "deg");
     s.style.animationDelay = (i * .07) + "s";
     document.body.appendChild(s);
@@ -590,31 +600,36 @@ document.addEventListener("click", function (e) {
   });
 
   // 敲碗
-  const label = (el, n, mine) => {
-    if (n == null) { el.textContent = mine ? "收到你的敲碗了！" : ""; return; }
-    el.innerHTML = n > 0 ? "已有 <b>" + n.toLocaleString() + "</b> 人敲碗" : "當第一個敲碗的人！";
-  };
   const AGAIN = ["貓在加緊趕工中！", "敲過了～再敲碗要被敲破了啦", "叮叮叮！貓聽到了", "等等等～快好了喔！"];
   document.querySelectorAll(".knock").forEach((btn) => {
     const id = btn.dataset.knock, name = btn.dataset.name, path = "knock-" + id;
     const card = btn.closest(".game"), out = card.querySelector(".knock-n");
     const key = "knock-" + id;
-    let n = null;
-    fetch(GC + "/counter/" + encodeURIComponent(path) + ".json")
+    // 11/10 修：統計還沒讀回來就按、或統計晚一點才更新時，自己敲過的也要看得到（至少 1 人）
+    let n = null, added = 0;
+    const render = () => {
+      const mine = store.get(key) === today();
+      if (n == null) { out.textContent = mine ? "你敲過碗了！" : ""; return; }
+      const total = mine ? Math.max(n + added, 1) : n + added;
+      out.innerHTML = total > 0 ? "已有 <b>" + total.toLocaleString() + "</b> 人敲碗" : "當第一個敲碗的人！";
+    };
+    render();
+    fetch(cntURL(path))
       .then((r) => r.status === 404 ? { count: "0" } : (r.ok ? r.json() : null))
-      .then((j) => { if (j && j.count != null) { n = parseInt(String(j.count).replace(/\D/g, ""), 10) || 0; label(out, n, false); } })
+      .then((j) => { if (j && j.count != null) { n = parseInt(String(j.count).replace(/\D/g, ""), 10) || 0; added = 0; render(); } })
       .catch(() => {});
     btn.addEventListener("click", () => {
       card.querySelector(".q").classList.remove("spin", "wobble"); // 轉過一圈／正在搖的問號也要能再跳
       replay(btn, "hit"); replay(card, "hit");
       ding(1180, 0); ding(1180, .16);
       const r = btn.getBoundingClientRect();
-      fx(r.left + r.width / 2, r.top, ["叮！", "🐾", "叮！"]);
-      if (store.get(key) === today()) { show(AGAIN[Math.floor(Math.random() * AGAIN.length)]); return; }
+      const dir = r.right + 110 < innerWidth ? 1 : -1; // 右邊空間不夠（手機右邊那張）就往左上飄
+      fx(dir > 0 ? r.right + 4 : r.left - 4, r.top + r.height / 2, ["叮！", "🐾", "叮！"], id, dir);
+      if (store.get(key) === today()) { render(); show(AGAIN[Math.floor(Math.random() * AGAIN.length)]); return; }
       store.set(key, today());
       track(path, "敲碗：" + name);
-      if (n != null) n += 1;
-      label(out, n, true);
+      added = 1;
+      render();
       show("叮叮！" + name.split(" ")[0] + "收到了，" + name.split(" ")[1] + " 見 🐾");
     });
   });
@@ -715,7 +730,7 @@ document.addEventListener("click", function (e) {
 
   // 玩過人數：遊戲頁打開人數滿 100 就顯示（1.9 萬+、1,200+、600+ 這種往下取整的概數）
   const fmt = (n) => n >= 10000 ? (Math.floor(n / 1000) / 10) + " 萬+" : (Math.floor(n / 100) * 100).toLocaleString() + "+";
-  const getCount = (path) => fetch(GC + "/counter/" + encodeURIComponent(path) + ".json")
+  const getCount = (path) => fetch(cntURL(path))
     .then((r) => (r.ok || r.status === 404) ? r.json() : null)
     .then((j) => j && j.count != null ? (parseInt(String(j.count).replace(/\D/g, ""), 10) || 0) : null)
     .catch(() => null);
@@ -855,7 +870,7 @@ document.addEventListener("click", function (e) {
   // 自己餵過就至少算 1 人（統計有時要等一下才會更新）
   const showCount = () => {
     if (feedCount == null) return;
-    const n = iFed ? Math.max(feedCount, 1) : feedCount;
+    const n = (iFed || store.get("feed-cat") === today()) ? Math.max(feedCount, 1) : feedCount;
     if (n > 0) feedN.innerHTML = "已經有 <b>" + n.toLocaleString() + "</b> 人餵過貓";
   };
   getCount("feed-cat").then((n) => { feedCount = n; showCount(); });
