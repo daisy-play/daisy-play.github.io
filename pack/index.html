@@ -9,9 +9,9 @@ document.addEventListener("click", function (e) {
   var label;
   if (e.target.closest('a[href*="ecpay.com.tw"]')) label = "按贊助：趕飛機塞行李";
   else {
-    var b = e.target.closest("#go,#again,#cardAgain,#startBtn,#againBtn");
+    var b = e.target.closest("#go,#again,#cardAgain,#startBtn,#againBtn,[data-gc]");
     if (!b || b.disabled) return;
-    label = "開始玩：趕飛機塞行李";
+    label = "開始玩：趕飛機塞行李" + (b.getAttribute("data-gc") || "");   // 11/10：data-gc 加在後面（例：拼豆的慢慢做）
   }
   (function send(n) {
     if (window.goatcounter && window.goatcounter.count) window.goatcounter.count({ path: label, title: label, event: true });
@@ -28,6 +28,9 @@ document.addEventListener("click", function (e) {
   background: #6e5a4c; color: #fff8ea; font-size: calc(var(--u) * 30); box-shadow: 0 calc(var(--u) * 4) 0 rgba(79, 58, 45, .25); z-index: 3; }
 /* 11/10：打開分數卡時藏起來，不然會蓋住分數卡的「‹ 返回」 */
 body:has(#cardScreen:not([hidden])) .homeLink.more { display: none; }
+/* 11/10：遊戲裡寫 <!--SITE_MORE--> 的地方（例：拼豆的存圖頁）放一顆跟著排的「玩其他遊戲」 */
+.siteMore { display: inline-block; padding: calc(var(--u) * 12) calc(var(--u) * 28); border-radius: 999px; text-decoration: none;
+  background: #6e5a4c; color: #fff8ea; font-family: var(--font); font-size: calc(var(--u) * 28); box-shadow: 0 calc(var(--u) * 4) 0 rgba(79, 58, 45, .25); }
 </style>
 <style>
 .signrow { display: flex; flex-direction: column; align-items: center; gap: calc(var(--u) * 8); margin-top: calc(var(--u) * 2); }

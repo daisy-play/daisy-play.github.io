@@ -86,9 +86,9 @@ document.addEventListener("click", function (e) {
   var label;
   if (e.target.closest('a[href*="ecpay.com.tw"]')) label = "按贊助：吃飯貓接接樂";
   else {
-    var b = e.target.closest("#go,#again,#cardAgain,#startBtn,#againBtn");
+    var b = e.target.closest("#go,#again,#cardAgain,#startBtn,#againBtn,[data-gc]");
     if (!b || b.disabled) return;
-    label = "開始玩：吃飯貓接接樂";
+    label = "開始玩：吃飯貓接接樂" + (b.getAttribute("data-gc") || "");   // 11/10：data-gc 加在後面（例：拼豆的慢慢做）
   }
   (function send(n) {
     if (window.goatcounter && window.goatcounter.count) window.goatcounter.count({ path: label, title: label, event: true });
