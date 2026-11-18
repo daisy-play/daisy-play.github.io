@@ -85,6 +85,8 @@ document.addEventListener("click", function (e) {
   if (!e.target.closest || location.hash === "#test") return;
   var label;
   if (e.target.closest('a[href*="ecpay.com.tw"]')) label = "按贊助：吃飯貓接接樂";
+  else if (e.target.closest(".siteMore")) label = "玩其他遊戲：吃飯貓接接樂";   // 11/18：記下來，才知道多少人按
+  else if (e.target.closest(".recGame")) label = "玩推薦：吃飯貓接接樂→" + (e.target.closest(".recGame").getAttribute("data-rec") || "首頁");
   else {
     var b = e.target.closest("#go,#again,#cardAgain,#startBtn,#againBtn,[data-gc]");
     if (!b || b.disabled) return;

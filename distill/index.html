@@ -8,6 +8,8 @@ document.addEventListener("click", function (e) {
   if (!e.target.closest || location.hash === "#test") return;
   var label;
   if (e.target.closest('a[href*="ecpay.com.tw"]')) label = "按贊助：顧好火候";
+  else if (e.target.closest(".siteMore")) label = "玩其他遊戲：顧好火候";   // 11/18：記下來，才知道多少人按
+  else if (e.target.closest(".recGame")) label = "玩推薦：顧好火候→" + (e.target.closest(".recGame").getAttribute("data-rec") || "首頁");
   else {
     var b = e.target.closest("#go,#again,#cardAgain,#startBtn,#againBtn,[data-gc]");
     if (!b || b.disabled) return;
@@ -179,7 +181,7 @@ body {
         <button id="again" class="btn">再玩一次</button>
       </div>
       <p class="warn">未滿十八歲請勿飲酒・飲酒過量，有害健康</p>
-      <div class="signrow"><div class="endPair"><a class="siteMore endMoreGames" href="../">玩其他遊戲</a><a class="coffee" href="https://p.ecpay.com.tw/463A54A" target="_blank" rel="noopener">☕ 請開發貓貓喝杯咖啡</a></div><p class="sign">© 旅遊貓 TravelCat</p></div>
+      <div class="signrow"><div class="endPair"><a class="siteMore endMoreGames" href="../">玩其他遊戲</a><a class="coffee" href="https://p.ecpay.com.tw/463A54A" target="_blank" rel="noopener">☕ 請開發貓喝咖啡</a></div><p class="sign">© 旅遊貓 TravelCat</p></div>
     </div>
 
     <div id="cardScreen" class="veil" hidden>

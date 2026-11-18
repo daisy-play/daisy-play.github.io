@@ -8,6 +8,8 @@ document.addEventListener("click", function (e) {
   if (!e.target.closest || location.hash === "#test") return;
   var label;
   if (e.target.closest('a[href*="ecpay.com.tw"]')) label = "按贊助：拼豆燙燙樂";
+  else if (e.target.closest(".siteMore")) label = "玩其他遊戲：拼豆燙燙樂";   // 11/18：記下來，才知道多少人按
+  else if (e.target.closest(".recGame")) label = "玩推薦：拼豆燙燙樂→" + (e.target.closest(".recGame").getAttribute("data-rec") || "首頁");
   else {
     var b = e.target.closest("#go,#again,#cardAgain,#startBtn,#againBtn,[data-gc]");
     if (!b || b.disabled) return;
@@ -246,7 +248,7 @@ body {
         <button id="again" class="btn">再玩一次</button>
       </div>
       <button id="endTheme" class="subBtn" type="button">換拼豆主題</button>
-      <div class="signrow"><div class="endPair"><a class="siteMore endMoreGames" href="../">玩其他遊戲</a><a class="coffee" href="https://p.ecpay.com.tw/463A54A" target="_blank" rel="noopener">☕ 請開發貓貓喝杯咖啡</a></div><p class="sign">© 手作貓 HandmadeCat</p></div>
+      <div class="signrow"><div class="endPair"><a class="siteMore endMoreGames" href="../">玩其他遊戲</a><a class="coffee" href="https://p.ecpay.com.tw/463A54A" target="_blank" rel="noopener">☕ 請開發貓喝咖啡</a></div><p class="sign">© 手作貓 HandmadeCat</p></div>
     </div>
 
     <div id="cardScreen" class="veil" hidden>
@@ -282,7 +284,7 @@ body {
         <button id="slowMore" class="btn">再做一個</button>
       </div>
       <div class="cardLinks"><button id="slowHome" class="subBtn" type="button">換拼豆主題</button></div>
-      <div class="signrow"><div class="endPair"><a class="siteMore endMoreGames" href="../">玩其他遊戲</a><a class="coffee" href="https://p.ecpay.com.tw/463A54A" target="_blank" rel="noopener">☕ 請開發貓貓喝杯咖啡</a></div><p class="sign">© 手作貓 HandmadeCat</p></div>
+      <div class="signrow"><div class="endPair"><a class="siteMore endMoreGames" href="../">玩其他遊戲</a><a class="coffee" href="https://p.ecpay.com.tw/463A54A" target="_blank" rel="noopener">☕ 請開發貓喝咖啡</a></div><p class="sign">© 手作貓 HandmadeCat</p></div>
     </div>
 
     <div id="pauseScreen" class="veil" hidden>
