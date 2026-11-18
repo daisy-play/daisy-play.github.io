@@ -505,6 +505,61 @@ document.addEventListener("click", function (e) {
         <div class="knock-row"><button class="knock" type="button" data-knock="guest-1120" data-name="神秘嘉賓 11/20"><span class="bowl" aria-hidden="true">🥣</span>敲碗</button><span class="knock-n" aria-live="polite"></span></div>
       </div>
     </div>
+
+    <div class="game soon">
+      <div class="mystery" style="--tint:#f3e0e4"><span class="q">?</span><span class="tape">即將上架</span></div>
+      <div class="info">
+        <span class="by">神秘嘉賓</span>
+        <h2>神秘新遊戲</h2>
+        <p>星期天，貓也想放假…還是想玩遊戲？上架那天就知道囉！</p>
+        <span class="date">11/22 上架</span>
+        <div class="knock-row"><button class="knock" type="button" data-knock="guest-1122" data-name="神秘嘉賓 11/22"><span class="bowl" aria-hidden="true">🥣</span>敲碗</button><span class="knock-n" aria-live="polite"></span></div>
+      </div>
+    </div>
+
+    <div class="game soon">
+      <div class="mystery" style="--tint:#f1ead6"><span class="q">?</span><span class="tape">即將上架</span></div>
+      <div class="info">
+        <span class="by">神秘嘉賓</span>
+        <h2>神秘新遊戲</h2>
+        <p>這隻貓偷偷準備了好久…上架那天就知道囉！</p>
+        <span class="date">11/24 上架</span>
+        <div class="knock-row"><button class="knock" type="button" data-knock="guest-1124" data-name="神秘嘉賓 11/24"><span class="bowl" aria-hidden="true">🥣</span>敲碗</button><span class="knock-n" aria-live="polite"></span></div>
+      </div>
+    </div>
+
+    <div class="game soon">
+      <div class="mystery" style="--tint:#dfe9f2"><span class="q">?</span><span class="tape">即將上架</span></div>
+      <div class="info">
+        <span class="by">神秘嘉賓</span>
+        <h2>神秘新遊戲</h2>
+        <p>會是哪一隻貓呢？先猜猜看！上架那天就知道囉！</p>
+        <span class="date">11/26 上架</span>
+        <div class="knock-row"><button class="knock" type="button" data-knock="guest-1126" data-name="神秘嘉賓 11/26"><span class="bowl" aria-hidden="true">🥣</span>敲碗</button><span class="knock-n" aria-live="polite"></span></div>
+      </div>
+    </div>
+
+    <div class="game soon">
+      <div class="mystery" style="--tint:#e3ecdf"><span class="q">?</span><span class="tape">即將上架</span></div>
+      <div class="info">
+        <span class="by">神秘嘉賓</span>
+        <h2>神秘新遊戲</h2>
+        <p>週末要帶大家去哪裡玩呢？上架那天就知道囉！</p>
+        <span class="date">11/28 上架</span>
+        <div class="knock-row"><button class="knock" type="button" data-knock="guest-1128" data-name="神秘嘉賓 11/28"><span class="bowl" aria-hidden="true">🥣</span>敲碗</button><span class="knock-n" aria-live="polite"></span></div>
+      </div>
+    </div>
+
+    <div class="game soon">
+      <div class="mystery" style="--tint:#efe0d2"><span class="q">?</span><span class="tape">即將上架</span></div>
+      <div class="info">
+        <span class="by">神秘嘉賓</span>
+        <h2>神秘新遊戲</h2>
+        <p>11 月最後一天，壓軸登場！上架那天就知道囉！</p>
+        <span class="date">11/30 上架</span>
+        <div class="knock-row"><button class="knock" type="button" data-knock="guest-1130" data-name="神秘嘉賓 11/30"><span class="bowl" aria-hidden="true">🥣</span>敲碗</button><span class="knock-n" aria-live="polite"></span></div>
+      </div>
+    </div>
   </div>
 
   <footer>
@@ -937,7 +992,7 @@ document.addEventListener("click", function (e) {
     const n = (iFed || store.get("feed-cat") === today()) ? Math.max(feedCount, 1) : feedCount;
     if (n > 0) feedN.innerHTML = "已經有 <b>" + n.toLocaleString() + "</b> 人餵過貓";
   };
-  getCount("feed-cat").then((n) => { feedCount = n; showCount(); });
+  getCount("feed-cat").then((n) => { feedCount = n == null ? null : n + 12; showCount(); }); // 11/18 她說多 12 看起來多一點
   const go = async () => {
     if (st.busy) return;
     st.busy = true;
