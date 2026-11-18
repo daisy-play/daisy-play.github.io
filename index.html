@@ -992,7 +992,7 @@ document.addEventListener("click", function (e) {
     const n = (iFed || store.get("feed-cat") === today()) ? Math.max(feedCount, 1) : feedCount;
     if (n > 0) feedN.innerHTML = "已經有 <b>" + n.toLocaleString() + "</b> 人餵過貓";
   };
-  getCount("feed-cat").then((n) => { feedCount = n == null ? null : n + 12; showCount(); }); // 11/18 她說多 12 看起來多一點
+  getCount("feed-cat").then((n) => { feedCount = n; showCount(); });
   const go = async () => {
     if (st.busy) return;
     st.busy = true;
