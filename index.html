@@ -167,6 +167,15 @@ footer { margin-top: 30px; text-align: center; color: var(--soft); }
 .coffee:hover { transform: translateY(-2px); }
 .coffee:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; }
 .copy span { white-space: nowrap; }
+/* 合作邀約（11/19）：放最下面、比贊助低調 */
+.work-wrap { margin: 0 0 16px; line-height: 1.5; }
+.work {
+  display: inline-block; padding: 6px 18px; border: 2px dashed var(--line); border-radius: 999px;
+  color: var(--ink); font-size: 14px; text-decoration: none; transition: border-color .18s ease, color .18s ease;
+}
+.work:hover { border-color: var(--red); color: var(--red); }
+.work:focus-visible { outline: 3px solid var(--red); outline-offset: 2px; }
+.work-mail { display: block; margin-top: 4px; font-size: 12px; opacity: .7; user-select: all; }
 /* 手機：一排兩個，卡片和字都縮小 */
 @media (max-width: 559px) {
   main { padding: 28px max(14px, env(safe-area-inset-right, 0px)) 24px max(14px, env(safe-area-inset-left, 0px)); }
@@ -308,10 +317,11 @@ footer { margin-top: 30px; text-align: center; color: var(--soft); }
 <script>
 document.addEventListener("click", function (e) {
   if (!e.target.closest) return;
-  var a = e.target.closest('a[href*="ecpay.com.tw"], a[href*="threads.com"], a[href*="youtube.com"], #share'), label;
+  var a = e.target.closest('a[href*="ecpay.com.tw"], a[href*="threads.com"], a[href*="youtube.com"], a[href^="mailto:"], #share'), label;
   if (!a) return;
   // 11/10 加：分享網站、脆、YT 也記
   if (a.id === "share") label = "按分享網站";
+  else if (a.href.indexOf("mailto:") === 0) label = "按合作邀約";   // 11/19 加
   else if (a.href.indexOf("threads.com") >= 0) label = "按脆追蹤";
   else if (a.href.indexOf("youtube.com") >= 0) label = "按YT：" + a.textContent.trim();
   else label = a.classList.contains("bar-coffee") ? "按贊助：首頁上方" : "按贊助：首頁下方";
@@ -629,6 +639,7 @@ document.addEventListener("click", function (e) {
       <p class="feed-n" id="feedN" aria-live="polite"></p>
     </div>
     <p class="coffee-wrap"><a class="coffee" href="https://p.ecpay.com.tw/463A54A" target="_blank" rel="noopener">☕ 請 Daisy 喝杯咖啡</a></p>
+    <p class="work-wrap"><a class="work" href="mailto:cat.studio.2027@gmail.com?subject=%E5%B0%8F%E9%81%8A%E6%88%B2%E5%90%88%E4%BD%9C%E9%82%80%E7%B4%84">📮 想做品牌小遊戲？來信聊聊</a><span class="work-mail">cat.studio.2027@gmail.com</span></p>
     <p class="copy">© <span>藝術貓 ArtCat</span>・<span>旅遊貓 TravelCat</span>・<span>手作貓 HandmadeCat</span>・<span>英語貓 EnglishCat</span></p>
   </footer>
 </main>
