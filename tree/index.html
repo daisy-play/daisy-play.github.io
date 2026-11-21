@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>裝飾一棵聖誕樹（試作第17版）</title>
+<!-- 2026-11-21 在升級視窗的對話裡一版一版調出來的試作（第 17 版）。還沒接 組合.mjs／產生網站版.mjs。 -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Huninn&display=swap">
+<style>
+html,body{margin:0;background:#0e0f18}
+body{display:flex;justify-content:center;padding:16px;box-sizing:border-box;min-height:100vh}
+.wrap{width:100%;max-width:680px}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.scr{position:relative;border-radius:18px;overflow:hidden;background:linear-gradient(180deg,#232c58 0%,#191c33 55%,#111220 100%);padding:52px 18px 40px;color:#fbf8f1;font-family:'Huninn',sans-serif;text-align:center;transition:background .6s}
+.scr button,.scr a{font-family:inherit!important}
+.scr .pill{display:inline-flex;align-items:center;justify-content:center;gap:6px;height:32px;box-sizing:border-box;padding:0 12px;margin:3px;border-radius:999px;border:0.5px solid rgba(255,255,255,.35)!important;background:rgba(255,255,255,.08)!important;color:#f8f4ec!important;font-size:13px;line-height:1;cursor:pointer;letter-spacing:.05em;text-decoration:none;vertical-align:middle}
+.scr .orns .pill{min-width:88px}
+.scr .pill:hover{background:rgba(255,255,255,.16)!important}
+.scr .pill.sel{border-color:#f0d9a6!important;background:rgba(240,217,166,.2)!important}
+.scr .pill.main{border-color:#f0d9a6!important;color:#f5dfae!important}
+.ic{width:14px;height:14px;display:inline-flex;align-items:center;justify-content:center;flex:none}
+.ic svg{max-width:14px;max-height:14px}
+.rd{display:inline-block;box-sizing:border-box;width:16px;height:16px;margin:0 3px;border-radius:50%;cursor:pointer;vertical-align:middle;border:1.5px solid rgba(255,255,255,.22);transition:transform .15s}
+.rd.sel{border-color:#f8f4ec;transform:scale(1.18)}
+.rd:hover{border-color:rgba(255,255,255,.6)}
+.lab{vertical-align:middle;margin-right:6px;font-size:12px;letter-spacing:.2em;color:#f3eee3}
+.dot{width:9px;height:9px;border-radius:50%;display:inline-block}
+.vl{width:1px;height:16px;background:rgba(255,255,255,.25);margin:0 8px}
+.hr{width:62%;max-width:250px;height:1px;background:rgba(255,255,255,.2);margin:12px auto 6px}
+.row{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:4px}
+.endPair{justify-content:center;align-items:stretch;gap:8px;margin-top:14px}
+.endPair a{display:flex;align-items:center;gap:6px;padding:7px 14px;border-radius:999px;border:0.5px solid rgba(255,255,255,.25);background:rgba(255,255,255,.05);color:#f3eee3!important;font-size:12px;letter-spacing:.06em;text-decoration:none;cursor:pointer}
+.endPair a:hover{background:rgba(255,255,255,.12)}
+#crow{transition:opacity .3s}
+svg.rm{cursor:pointer!important}
+svg.rm #orn > g:hover{opacity:.5}
+.bulb{opacity:.35}
+svg.lit .bulb{animation:tw 1.6s ease-in-out infinite}
+@keyframes tw{0%,100%{opacity:.45}50%{opacity:1}}
+.snow{animation:fall linear infinite}
+@keyframes fall{from{transform:translateY(-20px)}to{transform:translateY(320px)}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h2 class="sr-only">裝飾一棵聖誕樹：選裝飾點樹上掛上去，放星星、點燈，存成聖誕卡送朋友。</h2>
+<div class="scr" id="scr">
+<div id="top" style="position:absolute;left:0;top:0;width:100%;height:50px;pointer-events:none"></div>
+<svg style="position:absolute;left:0;bottom:0;width:100%;height:22px;pointer-events:none" viewBox="0 0 100 22" preserveAspectRatio="none">
+<path d="M0 22 L0 12 Q6 6 12 11 Q19 5 27 10 Q35 4 44 10 Q52 6 60 11 Q68 5 77 10 Q85 6 92 11 Q96 8 100 10 L100 22 Z" fill="#eef0f6" fill-opacity=".9"/>
+</svg>
+<div style="font-size:12px;letter-spacing:.35em;color:#f3eee3">十二月｜製作聖誕卡</div>
+<div style="font-size:21px;letter-spacing:.3em;margin:4px 0 4px;color:#fffdf8">裝飾一棵聖誕樹</div>
+<svg id="sv" viewBox="-20 0 340 296" style="display:block;margin:0 auto;width:100%;max-width:370px;cursor:crosshair">
+<g id="snowg" opacity=".55"></g>
+<path id="hit" d="M150 40 L190 104 L172 104 L214 168 L192 168 L240 248 L60 248 L108 168 L86 168 L128 104 L110 104 Z" fill="none" stroke="#000" stroke-opacity="0" stroke-width="24" stroke-linejoin="round"/>
+<path id="tree" d="M150 40 L190 104 L172 104 L214 168 L192 168 L240 248 L60 248 L108 168 L86 168 L128 104 L110 104 Z" fill="rgba(255,255,255,.03)" stroke="#f3efe6" stroke-width="1.4" stroke-linejoin="round"/>
+<rect x="141" y="248" width="18" height="40" fill="none" stroke="#f3efe6" stroke-width="1.3"/>
+<g stroke="#f3efe6" stroke-width="1.2" stroke-linejoin="round" fill="#ffffff">
+<g><rect x="10" y="256" width="42" height="32" fill-opacity=".1"/><line x1="31" y1="256" x2="31" y2="288"/><path d="M31 256 q-9 -10 -12 -2 q2 4 12 2 q9 -10 12 -2 q-2 4 -12 2" fill="none"/></g>
+<g><rect x="58" y="272" width="24" height="16" fill-opacity=".06"/><line x1="70" y1="272" x2="70" y2="288"/></g>
+<g><rect x="214" y="266" width="34" height="22" fill-opacity=".06"/><line x1="214" y1="277" x2="248" y2="277"/><line x1="231" y1="266" x2="231" y2="288"/></g>
+<g><rect x="254" y="252" width="48" height="36" fill-opacity=".1"/><line x1="278" y1="252" x2="278" y2="288"/><line x1="254" y1="270" x2="302" y2="270"/><path d="M278 252 q-10 -11 -13 -2 q2 4 13 2 q10 -11 13 -2 q-2 4 -13 2" fill="none"/></g>
+</g>
+<line x1="-6" y1="289" x2="306" y2="289" stroke="#f3efe6" stroke-opacity=".3" stroke-width="1"/>
+<g id="orn"></g>
+<path id="star" pointer-events="visible" d="M150 22 L154.5 33 L166 33 L157 40 L160.5 51 L150 44.5 L139.5 51 L143 40 L134 33 L145.5 33 Z" fill="none" stroke="#f3d98c" stroke-width="1.3" opacity="0"/>
+</svg>
+<div id="hint" style="font-size:14px;letter-spacing:.12em;color:#f5dfae;margin:4px 0 0">選一種裝飾，點樹上掛上去</div>
+<div id="en" style="font-family:Georgia,'Times New Roman',serif;font-style:italic;font-size:17px;letter-spacing:.18em;color:#f8ecd0;height:24px;margin:2px 0 6px;opacity:0;transition:opacity .8s">Merry Christmas</div>
+<div class="row" style="margin-bottom:6px">
+<span id="crow"><span class="lab">顏色</span><span class="rd sel" role="button" tabindex="0" aria-label="紅" data-c="0" style="background:#d5544a"></span><span class="rd" role="button" tabindex="0" aria-label="金" data-c="1" style="background:#e3c06e"></span><span class="rd" role="button" tabindex="0" aria-label="綠" data-c="2" style="background:#6f9a7c"></span><span class="rd" role="button" tabindex="0" aria-label="蒂芬妮" data-c="3" style="background:#81d8d0"></span><span class="rd" role="button" tabindex="0" aria-label="藍" data-c="4" style="background:#8aa5e3"></span><span class="rd" role="button" tabindex="0" aria-label="紫" data-c="5" style="background:#a58fd0"></span><span class="rd" role="button" tabindex="0" aria-label="霧粉" data-c="6" style="background:#d99aa8"></span><span class="rd" role="button" tabindex="0" aria-label="銀" data-c="7" style="background:#cfd3db"></span></span>
+<span class="vl"></span>
+<span><span class="lab">背景</span><span class="rd sel" role="button" tabindex="0" aria-label="夜藍" data-bg="#232c58,#191c33,#111220" style="background:#232c58"></span><span class="rd" role="button" tabindex="0" aria-label="霧紫" data-bg="#43386a,#2a2442,#151222" style="background:#43386a"></span><span class="rd" role="button" tabindex="0" aria-label="玫瑰粉" data-bg="#7a4058,#4e2a3c,#25131d" style="background:#7a4058"></span><span class="rd" role="button" tabindex="0" aria-label="酒紅" data-bg="#5c2632,#3b1821,#1e0c11" style="background:#5c2632"></span><span class="rd" role="button" tabindex="0" aria-label="焦糖" data-bg="#6b4528,#46301e,#21160e" style="background:#6b4528"></span><span class="rd" role="button" tabindex="0" aria-label="墨綠" data-bg="#1f4a3c,#163329,#0c1b16" style="background:#1f4a3c"></span><span class="rd" role="button" tabindex="0" aria-label="深海青" data-bg="#1e4f58,#15363d,#0b1c20" style="background:#1e4f58"></span><span class="rd" role="button" tabindex="0" aria-label="墨黑" data-bg="#2a2a2e,#1a1a1d,#0c0c0e" style="background:#2a2a2e"></span></span>
+</div>
+<div class="orns">
+<button class="pill sel" data-k="ball"><span class="ic"><span class="dot ccd" style="background:#d5544a;width:11px;height:11px"></span></span>彩球</button>
+<button class="pill" data-k="bulb"><span class="ic"><span class="dot ccl" style="background:#ffb8a8;width:7px;height:7px"></span></span>小燈</button>
+<button class="pill" data-k="cane"><span class="ic"><svg width="8" height="14" viewBox="-7 -10 10 20"><path d="M2 9 L2 -4 Q2 -8.5 -1.8 -8.5 Q-5.6 -8.5 -5.6 -4.8" fill="none" stroke="#f8f4ec" stroke-width="2.8" stroke-linecap="round"/><path class="ccs" d="M2 9 L2 -4 Q2 -8.5 -1.8 -8.5 Q-5.6 -8.5 -5.6 -4.8" fill="none" stroke="#d5544a" stroke-width="2.8" stroke-dasharray="2 2.2"/></svg></span>拐杖糖</button>
+<button class="pill" data-k="sock"><span class="ic"><svg width="11" height="14" viewBox="-5 -9.5 12 17.5"><path class="ccf" d="M-3.5 -6 L3 -6 L3 1 L6.5 3 Q8.5 6.5 5 7.5 L-1 6.5 Q-4.5 5.5 -3.5 2 Z" fill="#d5544a"/><rect x="-4.5" y="-9" width="8.5" height="3.4" rx="1" fill="#f4efe4"/></svg></span>聖誕襪</button>
+<button class="pill" data-k="bow"><span class="ic"><svg width="14" height="10" viewBox="-7 -4.5 14 9"><path class="ccf" d="M0 0 C-2.5 -4 -7 -4 -6.5 0 C-7 4 -2.5 4 0 0 Z M0 0 C2.5 -4 7 -4 6.5 0 C7 4 2.5 4 0 0 Z" fill="#d5544a"/></svg></span>蝴蝶結</button>
+<button class="pill" data-k="gift"><span class="ic"><svg width="12" height="12" viewBox="-5.5 -5.5 11 11"><rect class="ccf" x="-4.5" y="-3.5" width="9" height="8" fill="#d5544a"/><path d="M0 -3.5V4.5M-4.5 .5H4.5" stroke="#f8f4ec" stroke-width="1"/></svg></span>小禮物</button>
+<br>
+<button class="pill" data-k="flake"><span class="ic"><svg width="12" height="12" viewBox="-6.5 -6.5 13 13"><path d="M0 -5.5V5.5M-4.8 -2.75L4.8 2.75M-4.8 2.75L4.8 -2.75" stroke="#f8f4ec" stroke-width="1.2" stroke-linecap="round"/></svg></span>雪花</button>
+<button class="pill" data-k="icicle"><span class="ic"><svg width="7" height="14" viewBox="-4 -9 8 19"><path d="M0 -8 Q3 -2 0 9 Q-3 -2 0 -8 Z" fill="#cfe0f5" fill-opacity=".55" stroke="#f3efe6" stroke-width=".7"/></svg></span>冰柱</button>
+<button class="pill" data-k="cone"><span class="ic"><svg width="9" height="14" viewBox="-4.5 -5.5 9 13"><ellipse rx="3.8" ry="5.8" cy="1" fill="#8a6142"/><path d="M-3.2 -1.5 Q0 0.5 3.2 -1.5 M-3.6 1.5 Q0 3.5 3.6 1.5 M-2.8 4.4 Q0 6 2.8 4.4" fill="none" stroke="#d8b48a" stroke-width=".8"/></svg></span>松果</button>
+<button class="pill" data-k="ginger"><span class="ic"><svg width="12" height="14" viewBox="-6.5 -8.5 13 16"><circle cy="-5.2" r="2.8" fill="#b77a45"/><path d="M-2.2 -2.8 L-6 -1.6 L-5.6 .2 L-2.2 -.4 L-3.8 6.2 L-1.6 6.8 L0 3.2 L1.6 6.8 L3.8 6.2 L2.2 -.4 L5.6 .2 L6 -1.6 L2.2 -2.8 Z" fill="#b77a45"/></svg></span>薑餅人</button>
+<button class="pill" data-k="snowman"><span class="ic"><svg width="10" height="14" viewBox="-5.5 -8 11 16"><circle cy="3" r="4.4" fill="#f4f2ec"/><circle cy="-3.6" r="3" fill="#f4f2ec"/><path class="ccs" d="M-3.4 -1.2 H3.4 M2 -1.2 L2.8 2.6" stroke="#d5544a" stroke-width="1.5" stroke-linecap="round" fill="none"/></svg></span>小雪人</button>
+<button class="pill" id="starb"><span class="ic"><svg width="13" height="13" viewBox="-7 -7 14 14"><path class="ccstar" d="M0 -6 L1.8 -1.9 L6 -1.9 L2.6 .8 L3.8 5 L0 2.5 L-3.8 5 L-2.6 .8 L-6 -1.9 L-1.8 -1.9 Z" fill="#ef8478"/></svg></span>放上星星</button>
+</div>
+<div class="hr"></div>
+<div class="row">
+<button class="pill" id="light"><span class="ic"><svg width="13" height="13" viewBox="-7 -7 14 14"><circle cy="-.5" r="3.2" fill="#ffe7a8"/><rect x="-1.5" y="2.8" width="3" height="2.4" rx=".6" fill="#cfd3db"/><path d="M0 -6.6V-5.4M-4.8 -4.6L-4 -3.8M4.8 -4.6L4 -3.8M-6.4 -.5H-5.2M6.4 -.5H5.2" stroke="#ffe7a8" stroke-width=".9" stroke-linecap="round"/></svg></span><span id="lightt">點燈</span></button>
+<button class="pill" id="rmb"><span class="ic"><svg width="13" height="13" viewBox="-7 -7 14 14"><circle r="5.6" fill="none" stroke="#f8f4ec" stroke-width="1"/><path d="M-2.8 0 H2.8" stroke="#f8f4ec" stroke-width="1.2" stroke-linecap="round"/></svg></span>拿下裝飾</button>
+<button class="pill" id="reset">拆掉重來</button>
+<button class="pill main" id="snap"><span class="ic"><svg width="14" height="12" viewBox="0 0 14 12"><rect x=".7" y="2.4" width="12.6" height="8.9" rx="1.6" fill="none" stroke="#f5dfae" stroke-width="1"/><path d="M4.4 2.4 L5.3 .8 H8.7 L9.6 2.4" fill="none" stroke="#f5dfae" stroke-width="1"/><circle cx="7" cy="6.8" r="2.3" fill="none" stroke="#f5dfae" stroke-width="1"/></svg></span>存成卡片送朋友</button>
+</div>
+<div id="shotbox"></div>
+<div class="endPair" id="endPair" style="display:none">
+<a href="https://p.ecpay.com.tw/463A54A" target="_blank" rel="noopener">☕ 請 Daisy 喝咖啡</a>
+<a href="../"><svg width="14" height="14" viewBox="0 0 14 14"><rect x="1" y="1" width="5" height="5" rx="1.2" fill="none" stroke="#f3eee3" stroke-width="1"/><rect x="8" y="1" width="5" height="5" rx="1.2" fill="none" stroke="#f3eee3" stroke-width="1"/><rect x="1" y="8" width="5" height="5" rx="1.2" fill="none" stroke="#f3eee3" stroke-width="1"/><rect x="8" y="8" width="5" height="5" rx="1.2" fill="none" stroke="#f3eee3" stroke-width="1"/></svg>玩其他遊戲</a>
+</div>
+<div style="font-size:11px;letter-spacing:.2em;color:rgba(243,238,227,.55);margin-top:14px">© Daisy的遊戲室</div>
+</div>
+</div>
+<script>
+const NS='http://www.w3.org/2000/svg',sv=document.getElementById('sv'),O=document.getElementById('orn'),T=document.getElementById('tree'),HIT=document.getElementById('hit'),H=document.getElementById('hint'),EN=document.getElementById('en'),ST=document.getElementById('star'),SCR=document.getElementById('scr'),LT=document.getElementById('lightt'),TOP=document.getElementById('top'),CROW=document.getElementById('crow'),RMB=document.getElementById('rmb');
+let kind='ball',ci=0,star=false,lit=false,n=0,rm=false,starC='#f3d98c',bg=['#232c58','#191c33','#111220'];
+const CC=['#d5544a','#e3c06e','#6f9a7c','#81d8d0','#8aa5e3','#a58fd0','#d99aa8','#cfd3db'],CL=['#ffb8a8','#ffe7a8','#cdeec6','#c9f3ef','#c4d6ff','#ddd0ff','#ffd3dc','#f6f8fc'],CD=['#a83c34','#b8963f','#4f7a5e','#4fa8a0','#5f7cc0','#7c66ad','#b0707e','#9ea4b0'],CS=['#ef8478','#f3d98c','#a9d1b2','#b5ebe6','#b3c8f5','#cbbcf0','#f2bfca','#eceef3'],cr='#f3efe6',W8='#f8f4ec',colorable=['ball','bulb','sock','bow','gift','cane','snowman'];
+const stripe=i=>i===7?'#9ea4b0':CC[i];
+const sg=document.getElementById('snowg');
+for(let i=0;i<28;i++){const c=document.createElementNS(NS,'circle');c.setAttribute('cx',Math.random()*340-20);c.setAttribute('cy',Math.random()*-10);c.setAttribute('r',(Math.random()*1.2+.5).toFixed(1));c.setAttribute('fill','#fff');c.setAttribute('class','snow');c.style.animationDuration=(7+Math.random()*7).toFixed(1)+'s';c.style.animationDelay=(-Math.random()*14).toFixed(1)+'s';sg.appendChild(c)}
+function topSvg(W){let h='';const L=[16,30,22,36,18,28,24,34];let k=0;
+for(let x=18;x<W;x+=40){const l=L[k%8];h+=`<line x1="${x}" y1="0" x2="${x}" y2="${l}" stroke="#f3efe6" stroke-opacity=".45" stroke-width=".7"/>`;const y=l+4;
+if(k%2===0){h+=`<circle cx="${x}" cy="${y}" r="3.4" fill="#f5dfae"/><circle cx="${x-1.1}" cy="${y-1.1}" r=".9" fill="#fff" fill-opacity=".75"/>`}
+else{const s=k%4===1?1:.75;h+=`<path transform="translate(${x},${y+1}) scale(${s})" d="M0 -5.5V5.5M-4.8 -2.75L4.8 2.75M-4.8 2.75L4.8 -2.75M-1.5 -4.2L0 -3L1.5 -4.2M-1.5 4.2L0 3L1.5 4.2" fill="none" stroke="#f8f4ec" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>`}k++}return h}
+function drawTop(){const W=SCR.clientWidth;TOP.innerHTML=`<svg width="${W}" height="50" viewBox="0 0 ${W} 50">${topSvg(W)}</svg>`}
+drawTop();new ResizeObserver(drawTop).observe(SCR);
+function setCrow(){CROW.style.opacity=colorable.includes(kind)?1:.45}
+function paintStar(){ST.setAttribute('stroke',starC);ST.setAttribute('fill',lit?starC:'none')}
+function setRm(v){rm=v;RMB.classList.toggle('sel',v);sv.classList.toggle('rm',v);if(v)H.textContent='點樹上的裝飾就能拿下來';else if(!(lit&&star))H.textContent='選一種裝飾，點樹上掛上去';upd()}
+RMB.onclick=()=>setRm(!rm);
+function tap(sel,fn){document.querySelectorAll(sel).forEach(b=>{b.onclick=()=>fn(b);b.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();fn(b)}}})}
+tap('[data-k]',b=>{document.querySelectorAll('[data-k]').forEach(x=>x.classList.remove('sel'));b.classList.add('sel');kind=b.dataset.k;setCrow();if(rm)setRm(false)});
+tap('[data-c]',b=>{document.querySelectorAll('[data-c]').forEach(x=>x.classList.remove('sel'));b.classList.add('sel');ci=+b.dataset.c;
+document.querySelectorAll('.ccd').forEach(d=>d.style.background=CC[ci]);document.querySelectorAll('.ccl').forEach(d=>d.style.background=CL[ci]);document.querySelectorAll('.ccf').forEach(d=>d.setAttribute('fill',CC[ci]));document.querySelectorAll('.ccs').forEach(d=>d.setAttribute('stroke',stripe(ci)));document.querySelectorAll('.ccstar').forEach(d=>d.setAttribute('fill',CS[ci]));
+if(!colorable.includes(kind))H.textContent='這個裝飾不能換色，星星可以喔'});
+tap('[data-bg]',b=>{document.querySelectorAll('[data-bg]').forEach(x=>x.classList.remove('sel'));b.classList.add('sel');bg=b.dataset.bg.split(',');SCR.style.background=`linear-gradient(180deg,${bg[0]} 0%,${bg[1]} 55%,${bg[2]} 100%)`});
+function el(t,a){const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);return e}
+function hang(g,top){g.appendChild(el('line',{x1:0,y1:top-4,x2:0,y2:top,stroke:cr,'stroke-opacity':.55,'stroke-width':.8}))}
+const S={stroke:cr,'stroke-width':.6,'stroke-linejoin':'round'};
+function draw(g,k){const c=CC[ci];g.appendChild(el('circle',{r:9,fill:'transparent'}));
+if(k==='ball'){hang(g,-6);g.appendChild(el('circle',{r:6,fill:c}));g.appendChild(el('circle',{cx:-2,cy:-2,r:1.5,fill:'#fff','fill-opacity':.6}));return}
+if(k==='bulb'){const b=el('circle',{r:2.8,fill:CL[ci],class:'bulb'});b.style.animationDelay=(-Math.random()*1.6).toFixed(2)+'s';g.appendChild(b);return}
+if(k==='flake'){g.appendChild(el('path',{d:'M0 -6V6M-5.2 -3L5.2 3M-5.2 3L5.2 -3',stroke:W8,'stroke-width':1,'stroke-linecap':'round'}));return}
+if(k==='sock'){hang(g,-9);g.appendChild(el('path',Object.assign({d:'M-3.5 -6 L3 -6 L3 1 L6.5 3 Q8.5 6.5 5 7.5 L-1 6.5 Q-4.5 5.5 -3.5 2 Z',fill:c},S)));g.appendChild(el('rect',Object.assign({x:-4.5,y:-9,width:8.5,height:3.4,rx:1,fill:'#f4efe4'},S)));return}
+if(k==='cane'){const d='M2 9 L2 -4 Q2 -8.5 -1.8 -8.5 Q-5.6 -8.5 -5.6 -4.8';g.appendChild(el('path',{d,fill:'none',stroke:W8,'stroke-width':2.8,'stroke-linecap':'round'}));g.appendChild(el('path',{d,fill:'none',stroke:stripe(ci),'stroke-width':2.8,'stroke-dasharray':'2 2.2'}));return}
+if(k==='bow'){g.appendChild(el('path',{d:'M-1 1 L-4 7.5 M1 1 L4 7.5',stroke:c,'stroke-width':1.6,'stroke-linecap':'round'}));g.appendChild(el('path',Object.assign({d:'M0 0 C-3 -5 -8.5 -5 -8 0 C-8.5 5 -3 5 0 0 Z M0 0 C3 -5 8.5 -5 8 0 C8.5 5 3 5 0 0 Z',fill:c},S)));g.appendChild(el('circle',Object.assign({r:1.7,fill:CD[ci]},S)));return}
+if(k==='gift'){hang(g,-9);g.appendChild(el('rect',Object.assign({x:-5.5,y:-4,width:11,height:10,fill:c},S)));g.appendChild(el('path',{d:'M0 -4V6M-5.5 1H5.5',stroke:W8,'stroke-width':1}));g.appendChild(el('path',{d:'M0 -4 q-3.5 -4.5 -4.4 -1 q1 1.4 4.4 1 q3.5 -4.5 4.4 -1 q-1 1.4 -4.4 1',fill:'none',stroke:W8,'stroke-width':.9}));return}
+if(k==='snowman'){g.appendChild(el('circle',Object.assign({cy:3.4,r:5,fill:'#f4f2ec'},S)));g.appendChild(el('circle',Object.assign({cy:-4,r:3.4,fill:'#f4f2ec'},S)));g.appendChild(el('path',{d:'M-3.8 -1.2 H3.8 M2.2 -1.2 L3.2 3',stroke:stripe(ci),'stroke-width':1.7,'stroke-linecap':'round',fill:'none'}));return}
+if(k==='icicle'){hang(g,-9);g.appendChild(el('path',{d:'M0 -9 Q3.4 -2.5 0 11 Q-3.4 -2.5 0 -9 Z',fill:'#cfe0f5','fill-opacity':.5,stroke:cr,'stroke-width':.7,'stroke-linejoin':'round'}));g.appendChild(el('path',{d:'M-.9 -4 Q-1.4 0 -.5 4',fill:'none',stroke:'#fff','stroke-opacity':.75,'stroke-width':.7,'stroke-linecap':'round'}));return}
+if(k==='ginger'){g.appendChild(el('circle',Object.assign({cy:-5.2,r:2.8,fill:'#b77a45'},S)));g.appendChild(el('path',Object.assign({d:'M-2.2 -2.8 L-6 -1.6 L-5.6 .2 L-2.2 -.4 L-3.8 6.2 L-1.6 6.8 L0 3.2 L1.6 6.8 L3.8 6.2 L2.2 -.4 L5.6 .2 L6 -1.6 L2.2 -2.8 Z',fill:'#b77a45'},S)));return}
+if(k==='cone'){hang(g,-7);g.appendChild(el('ellipse',Object.assign({rx:3.8,ry:5.8,cy:1,fill:'#8a6142'},S)));g.appendChild(el('path',{d:'M-3.2 -1.5 Q0 0.5 3.2 -1.5 M-3.6 1.5 Q0 3.5 3.6 1.5 M-2.8 4.4 Q0 6 2.8 4.4',fill:'none',stroke:'#d8b48a','stroke-width':.7}));return}
+}
+function upd(){const done=lit&&star;EN.style.opacity=done?1:0;if(done&&!rm)H.textContent='聖誕快樂'}
+sv.addEventListener('click',e=>{
+if(rm){const og=e.target.closest('#orn > g');if(og){og.remove();n=Math.max(0,n-1);H.textContent='拿下來了，還要拿哪個？'}else if(e.target===ST&&star){star=false;ST.setAttribute('opacity',0);H.textContent='星星拿下來了';upd()}else H.textContent='點要拿掉的裝飾';return}
+const p=sv.createSVGPoint();p.x=e.clientX;p.y=e.clientY;const r=p.matrixTransform(sv.getScreenCTM().inverse());const dp=new DOMPoint(r.x,r.y);
+if(!(T.isPointInFill(dp)||HIT.isPointInStroke(dp))||r.y>256){H.textContent='掛在樹上喔';EN.style.opacity=0;setTimeout(upd,1200);return}
+const g=el('g',{transform:`translate(${r.x.toFixed(1)},${r.y.toFixed(1)})`});draw(g,kind);O.appendChild(g);n++;
+if(!(lit&&star))H.textContent=n<4?'再多掛幾個，換個顏色試試':n<9?'小燈要多一點，點燈才好看':(star?'可以點燈了':'最後放上頂端的星星')});
+document.getElementById('starb').onclick=()=>{if(rm)setRm(false);const again=star;star=true;starC=CS[ci];paintStar();ST.style.transition='opacity .6s';ST.setAttribute('opacity',1);H.textContent=again?'星星換好顏色了':'星星放好了，點燈看看';if(!again||lit)upd()};
+document.getElementById('light').onclick=()=>{lit=!lit;sv.classList.toggle('lit',lit);paintStar();LT.textContent=lit?'關燈':'點燈';if(!rm)H.textContent=lit?'亮起來了，別忘了星星':'燈關了';upd()};
+document.getElementById('reset').onclick=()=>{O.innerHTML='';n=0;star=false;lit=false;ST.setAttribute('opacity',0);sv.classList.remove('lit');paintStar();LT.textContent='點燈';setRm(false);H.textContent='選一種裝飾，點樹上掛上去'};
+function img(s){return new Promise((ok,no)=>{const i=new Image();i.onload=()=>ok(i);i.onerror=no;i.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(s)})}
+function sp(c,v){if('letterSpacing' in c)c.letterSpacing=v}
+document.getElementById('snap').onclick=async()=>{
+const box=document.getElementById('shotbox'),ep=document.getElementById('endPair');box.innerHTML='<div style="font-size:12px;margin-top:10px;color:#f3eee3">卡片製作中…</div>';
+try{await document.fonts.load('20px Huninn');
+const W=540,Hh=630,K=2,cv=document.createElement('canvas');cv.width=W*K;cv.height=Hh*K;const c=cv.getContext('2d');c.scale(K,K);
+const gr=c.createLinearGradient(0,0,0,Hh);gr.addColorStop(0,bg[0]);gr.addColorStop(.55,bg[1]);gr.addColorStop(1,bg[2]);c.fillStyle=gr;c.fillRect(0,0,W,Hh);
+c.drawImage(await img(`<svg xmlns="${NS}" width="${W}" height="50" viewBox="0 0 ${W} 50">${topSvg(W)}</svg>`),0,0);
+const cl=sv.cloneNode(true);cl.setAttribute('width',460);cl.setAttribute('height',400);cl.removeAttribute('style');cl.removeAttribute('class');cl.querySelector('#hit').remove();
+cl.querySelectorAll('.snow').forEach(s=>{s.setAttribute('cy',(Math.random()*280).toFixed(0));s.removeAttribute('class');s.removeAttribute('style')});
+cl.querySelectorAll('.bulb').forEach(b=>{b.setAttribute('opacity',lit?1:.35);b.removeAttribute('class');b.removeAttribute('style')});
+cl.querySelector('#star').removeAttribute('style');
+let str=new XMLSerializer().serializeToString(cl);if(!/xmlns=/.test(str))str=str.replace('<svg','<svg xmlns="'+NS+'"');
+c.drawImage(await img(str),40,52);
+c.textAlign='center';c.fillStyle='#f5dfae';c.font='22px Huninn';sp(c,'6px');c.fillText('聖誕快樂',W/2,496);
+c.fillStyle='#f8ecd0';c.font='italic 24px Georgia, serif';sp(c,'4px');c.fillText('Merry Christmas',W/2,534);
+c.fillStyle='rgba(243,238,227,.42)';c.font='10px Huninn';sp(c,'2px');c.fillText('© Daisy的遊戲室',W/2,592);
+c.drawImage(await img(`<svg xmlns="${NS}" width="${W}" height="24" viewBox="0 0 100 22" preserveAspectRatio="none"><path d="M0 22 L0 12 Q6 6 12 11 Q19 5 27 10 Q35 4 44 10 Q52 6 60 11 Q68 5 77 10 Q85 6 92 11 Q96 8 100 10 L100 22 Z" fill="#eef0f6" fill-opacity=".9"/></svg>`),0,Hh-24);
+const url=cv.toDataURL('image/png');
+box.innerHTML=`<div style="margin-top:12px"><img src="${url}" alt="裝飾好的聖誕樹卡片" style="width:100%;max-width:260px;border-radius:10px;border:0.5px solid rgba(255,255,255,.3)"><div style="font-size:12px;letter-spacing:.08em;color:#f3eee3;margin:6px 0">在圖片上按右鍵（手機長按）就能存下來</div><a class="pill" href="${url}" download="我的聖誕樹.png">下載圖片</a></div>`;
+}catch(err){box.innerHTML='<div style="font-size:12px;margin-top:10px;color:#f5dfae">存圖失敗，請再試一次</div>'}
+ep.style.display='flex'};
+</script>
+</body>
+</html>
