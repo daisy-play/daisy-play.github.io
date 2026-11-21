@@ -18,6 +18,7 @@ body{display:flex;justify-content:center;padding:16px;box-sizing:border-box;min-
 .scr .pill:hover{background:rgba(255,255,255,.16)!important}
 .scr .pill.sel{border-color:#f0d9a6!important;background:rgba(240,217,166,.2)!important}
 .scr .pill.main{border-color:#f0d9a6!important;color:#f5dfae!important}
+.scr .pill.warn{border-color:#f2a7a7!important;background:rgba(242,167,167,.18)!important;color:#ffd9d9!important}
 .ic{width:14px;height:14px;display:inline-flex;align-items:center;justify-content:center;flex:none}
 .ic svg{max-width:14px;max-height:14px}
 .rd{display:inline-block;box-sizing:border-box;width:16px;height:16px;margin:0 3px;border-radius:50%;cursor:pointer;vertical-align:middle;border:1.5px solid rgba(255,255,255,.22);transition:transform .15s}
@@ -219,7 +220,11 @@ const g=el('g',{transform:`translate(${r.x.toFixed(1)},${r.y.toFixed(1)})`});dra
 if(!(lit&&star))H.textContent=n<4?'再多掛幾個，換個顏色試試':n<9?'小燈要多一點，點燈才好看':(star?'可以點燈了':'最後放上頂端的星星')});
 document.getElementById('starb').onclick=()=>{if(rm)setRm(false);const again=star;sfx('star');if(!again&&lit)SFX.done();star=true;starC=CS[ci];paintStar();ST.style.transition='opacity .6s';ST.setAttribute('opacity',1);H.textContent=again?'星星換好顏色了':'星星放好了，點燈看看';if(!again||lit)upd()};
 document.getElementById('light').onclick=()=>{lit=!lit;sfx(lit?'light':'dark');if(lit&&star)SFX.done();sv.classList.toggle('lit',lit);paintStar();LT.textContent=lit?'關燈':'點燈';if(!rm)H.textContent=lit?'亮起來了，別忘了星星':'燈關了';upd()};
-document.getElementById('reset').onclick=()=>{sfx('reset');O.innerHTML='';n=0;star=false;lit=false;ST.setAttribute('opacity',0);sv.classList.remove('lit');paintStar();LT.textContent='點燈';setRm(false);H.textContent='選一種裝飾，點樹上掛上去'};
+/* 拆掉重來：怕不小心按到，要按兩次（第一次變「確定拆掉」，3 秒內沒按就變回來）；樹上沒東西就直接拆 */
+const RS=document.getElementById('reset');let rsArm=null;
+function rsOff(){clearTimeout(rsArm);rsArm=null;RS.textContent='拆掉重來';RS.classList.remove('warn')}
+RS.onclick=()=>{if(!rsArm&&(n>0||star||lit)){sfx('pick');RS.textContent='確定拆掉';RS.classList.add('warn');rsArm=setTimeout(rsOff,3000);return}rsOff();doReset()};
+function doReset(){sfx('reset');O.innerHTML='';n=0;star=false;lit=false;ST.setAttribute('opacity',0);sv.classList.remove('lit');paintStar();LT.textContent='點燈';setRm(false);H.textContent='選一種裝飾，點樹上掛上去'};
 function img(s){return new Promise((ok,no)=>{const i=new Image();i.onload=()=>ok(i);i.onerror=no;i.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(s)})}
 function sp(c,v){if('letterSpacing' in c)c.letterSpacing=v}
 document.getElementById('snap').onclick=async()=>{sfx('snap');
