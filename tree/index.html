@@ -37,6 +37,8 @@ svg.rm #orn > g:hover{opacity:.5}
 .bulb{opacity:.35}
 svg.lit .bulb{animation:tw 1.6s ease-in-out infinite}
 @keyframes tw{0%,100%{opacity:.45}50%{opacity:1}}
+#mute{position:absolute;top:10px;right:10px;z-index:2;width:30px;height:30px;padding:0;border-radius:50%;border:0.5px solid rgba(255,255,255,.35);background:rgba(255,255,255,.08);color:#f8f4ec;cursor:pointer;display:flex;align-items:center;justify-content:center}
+#mute:hover{background:rgba(255,255,255,.16)}
 .snow{animation:fall linear infinite}
 @keyframes fall{from{transform:translateY(-20px)}to{transform:translateY(320px)}}
 </style>
@@ -46,6 +48,7 @@ svg.lit .bulb{animation:tw 1.6s ease-in-out infinite}
 <h2 class="sr-only">裝飾一棵聖誕樹：選裝飾點樹上掛上去，放星星、點燈，存成聖誕卡送朋友。</h2>
 <div class="scr" id="scr">
 <div id="top" style="position:absolute;left:0;top:0;width:100%;height:50px;pointer-events:none"></div>
+<button id="mute" aria-label="聲音開關" title="聲音開關"></button>
 <svg style="position:absolute;left:0;bottom:0;width:100%;height:22px;pointer-events:none" viewBox="0 0 100 22" preserveAspectRatio="none">
 <path d="M0 22 L0 12 Q6 6 12 11 Q19 5 27 10 Q35 4 44 10 Q52 6 60 11 Q68 5 77 10 Q85 6 92 11 Q96 8 100 10 L100 22 Z" fill="#eef0f6" fill-opacity=".9"/>
 </svg>
@@ -108,6 +111,29 @@ const NS='http://www.w3.org/2000/svg',sv=document.getElementById('sv'),O=documen
 let kind='ball',ci=0,star=false,lit=false,n=0,rm=false,starC='#f3d98c',bg=['#232c58','#191c33','#111220'];
 const CC=['#d5544a','#e3c06e','#6f9a7c','#81d8d0','#8aa5e3','#a58fd0','#d99aa8','#cfd3db'],CL=['#ffb8a8','#ffe7a8','#cdeec6','#c9f3ef','#c4d6ff','#ddd0ff','#ffd3dc','#f6f8fc'],CD=['#a83c34','#b8963f','#4f7a5e','#4fa8a0','#5f7cc0','#7c66ad','#b0707e','#9ea4b0'],CS=['#ef8478','#f3d98c','#a9d1b2','#b5ebe6','#b3c8f5','#cbbcf0','#f2bfca','#eceef3'],cr='#f3efe6',W8='#f8f4ec',colorable=['ball','bulb','sock','bow','gift','cane','snowman'];
 const stripe=i=>i===7?'#9ea4b0':CC[i];
+/* 音效：全部用程式合成（不用音檔），輕、像玻璃和小鈴鐺。靜音記在 tree-muted */
+let AC=null,VOL=null,NZ=null,muted=false;try{muted=localStorage.getItem('tree-muted')==='1'}catch(e){}
+function au(){if(AC){if(AC.state==='suspended')AC.resume();return}try{AC=new(window.AudioContext||window.webkitAudioContext);VOL=AC.createGain();VOL.gain.value=muted?0:.8;VOL.connect(AC.destination);NZ=AC.createBuffer(1,AC.sampleRate*.3,AC.sampleRate);const d=NZ.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1}catch(e){AC=null}}
+function tone(f,dur,vol,type='sine',at=0,f2){if(!AC||muted)return;const t=AC.currentTime+at,o=AC.createOscillator(),g=AC.createGain();o.type=type;o.frequency.setValueAtTime(f,t);if(f2)o.frequency.exponentialRampToValueAtTime(f2,t+dur);g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(vol,t+.005);g.gain.exponentialRampToValueAtTime(1e-4,t+dur);o.connect(g);g.connect(VOL);o.start(t);o.stop(t+dur+.03)}
+function bell(f,vol=.1,at=0,dur=.9){tone(f,dur,vol,'sine',at);tone(f*2.76,dur*.35,vol*.25,'sine',at);tone(f*5.4,dur*.15,vol*.08,'sine',at)}
+function noise(freq,dur,vol,type='bandpass',at=0){if(!AC||muted)return;const t=AC.currentTime+at,s=AC.createBufferSource(),fl=AC.createBiquadFilter(),g=AC.createGain();s.buffer=NZ;fl.type=type;fl.frequency.value=freq;fl.Q.value=.8;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(vol,t+.003);g.gain.exponentialRampToValueAtTime(1e-4,t+dur);s.connect(fl);fl.connect(g);g.connect(VOL);s.start(t);s.stop(t+dur+.02)}
+const PENTA=[1047,1175,1319,1568,1760,2093];
+const SFX={
+pick:()=>tone(1400,.05,.035,'sine'),
+hang:()=>bell(PENTA[Math.floor(Math.random()*PENTA.length)],.09),
+miss:()=>tone(240,.12,.06,'sine',0,170),
+off:()=>tone(520,.09,.07,'sine',0,260),
+star:()=>[1047,1319,1568,2093].forEach((f,i)=>bell(f,.07,i*.09,1.1)),
+light:()=>{[2093,2637,3136,2349,2794,3520,2637].forEach((f,i)=>bell(f,.035,i*.055+Math.random()*.02,.7));bell(784,.06,0,1.6)},
+dark:()=>tone(660,.35,.05,'sine',0,330),
+reset:()=>[1568,1319,1175,1047,880].forEach((f,i)=>bell(f,.045,i*.06,.5)),
+snap:()=>{noise(3000,.05,.12,'highpass');noise(1800,.07,.08,'bandpass',.07)},
+done:()=>[784,988,1175,1568].forEach((f,i)=>bell(f,.06,.35+i*.14,1.4))};
+function sfx(k){au();SFX[k]()}
+const MB=document.getElementById('mute');
+function drawMute(){MB.innerHTML=`<svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="#f8f4ec" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 6 H5 L8.5 3 V13 L5 10 H2.5 Z"/>${muted?'<path d="M11 6 L14.5 9.5 M14.5 6 L11 9.5"/>':'<path d="M11 5.5 Q12.8 8 11 10.5 M12.8 3.8 Q15.6 8 12.8 12.2"/>'}</svg>`;MB.setAttribute('aria-pressed',muted?'true':'false')}
+MB.onclick=()=>{muted=!muted;try{localStorage.setItem('tree-muted',muted?'1':'0')}catch(e){}au();if(VOL)VOL.gain.value=muted?0:.8;drawMute();if(!muted)SFX.pick()};drawMute();
+document.addEventListener('visibilitychange',()=>{if(AC)document.hidden?AC.suspend():AC.resume()});
 const sg=document.getElementById('snowg');
 for(let i=0;i<28;i++){const c=document.createElementNS(NS,'circle');c.setAttribute('cx',Math.random()*340-20);c.setAttribute('cy',Math.random()*-10);c.setAttribute('r',(Math.random()*1.2+.5).toFixed(1));c.setAttribute('fill','#fff');c.setAttribute('class','snow');c.style.animationDuration=(7+Math.random()*7).toFixed(1)+'s';c.style.animationDelay=(-Math.random()*14).toFixed(1)+'s';sg.appendChild(c)}
 function topSvg(W){let h='';const L=[16,30,22,36,18,28,24,34];let k=0;
@@ -119,8 +145,8 @@ drawTop();new ResizeObserver(drawTop).observe(SCR);
 function setCrow(){CROW.style.opacity=colorable.includes(kind)?1:.45}
 function paintStar(){ST.setAttribute('stroke',starC);ST.setAttribute('fill',lit?starC:'none')}
 function setRm(v){rm=v;RMB.classList.toggle('sel',v);sv.classList.toggle('rm',v);if(v)H.textContent='點樹上的裝飾就能拿下來';else if(!(lit&&star))H.textContent='選一種裝飾，點樹上掛上去';upd()}
-RMB.onclick=()=>setRm(!rm);
-function tap(sel,fn){document.querySelectorAll(sel).forEach(b=>{b.onclick=()=>fn(b);b.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();fn(b)}}})}
+RMB.onclick=()=>{sfx('pick');setRm(!rm)};
+function tap(sel,fn){const go=b=>{sfx('pick');fn(b)};document.querySelectorAll(sel).forEach(b=>{b.onclick=()=>go(b);b.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go(b)}}})}
 tap('[data-k]',b=>{document.querySelectorAll('[data-k]').forEach(x=>x.classList.remove('sel'));b.classList.add('sel');kind=b.dataset.k;setCrow();if(rm)setRm(false)});
 tap('[data-c]',b=>{document.querySelectorAll('[data-c]').forEach(x=>x.classList.remove('sel'));b.classList.add('sel');ci=+b.dataset.c;
 document.querySelectorAll('.ccd').forEach(d=>d.style.background=CC[ci]);document.querySelectorAll('.ccl').forEach(d=>d.style.background=CL[ci]);document.querySelectorAll('.ccf').forEach(d=>d.setAttribute('fill',CC[ci]));document.querySelectorAll('.ccs').forEach(d=>d.setAttribute('stroke',stripe(ci)));document.querySelectorAll('.ccstar').forEach(d=>d.setAttribute('fill',CS[ci]));
@@ -144,17 +170,17 @@ if(k==='cone'){hang(g,-7);g.appendChild(el('ellipse',Object.assign({rx:3.8,ry:5.
 }
 function upd(){const done=lit&&star;EN.style.opacity=done?1:0;if(done&&!rm)H.textContent='聖誕快樂'}
 sv.addEventListener('click',e=>{
-if(rm){const og=e.target.closest('#orn > g');if(og){og.remove();n=Math.max(0,n-1);H.textContent='拿下來了，還要拿哪個？'}else if(e.target===ST&&star){star=false;ST.setAttribute('opacity',0);H.textContent='星星拿下來了';upd()}else H.textContent='點要拿掉的裝飾';return}
+if(rm){const og=e.target.closest('#orn > g');if(og){sfx('off');og.remove();n=Math.max(0,n-1);H.textContent='拿下來了，還要拿哪個？'}else if(e.target===ST&&star){sfx('off');star=false;ST.setAttribute('opacity',0);H.textContent='星星拿下來了';upd()}else{sfx('miss');H.textContent='點要拿掉的裝飾'}return}
 const p=sv.createSVGPoint();p.x=e.clientX;p.y=e.clientY;const r=p.matrixTransform(sv.getScreenCTM().inverse());const dp=new DOMPoint(r.x,r.y);
-if(!(T.isPointInFill(dp)||HIT.isPointInStroke(dp))||r.y>256){H.textContent='掛在樹上喔';EN.style.opacity=0;setTimeout(upd,1200);return}
-const g=el('g',{transform:`translate(${r.x.toFixed(1)},${r.y.toFixed(1)})`});draw(g,kind);O.appendChild(g);n++;
+if(!(T.isPointInFill(dp)||HIT.isPointInStroke(dp))||r.y>256){sfx('miss');H.textContent='掛在樹上喔';EN.style.opacity=0;setTimeout(upd,1200);return}
+const g=el('g',{transform:`translate(${r.x.toFixed(1)},${r.y.toFixed(1)})`});draw(g,kind);O.appendChild(g);n++;sfx('hang');
 if(!(lit&&star))H.textContent=n<4?'再多掛幾個，換個顏色試試':n<9?'小燈要多一點，點燈才好看':(star?'可以點燈了':'最後放上頂端的星星')});
-document.getElementById('starb').onclick=()=>{if(rm)setRm(false);const again=star;star=true;starC=CS[ci];paintStar();ST.style.transition='opacity .6s';ST.setAttribute('opacity',1);H.textContent=again?'星星換好顏色了':'星星放好了，點燈看看';if(!again||lit)upd()};
-document.getElementById('light').onclick=()=>{lit=!lit;sv.classList.toggle('lit',lit);paintStar();LT.textContent=lit?'關燈':'點燈';if(!rm)H.textContent=lit?'亮起來了，別忘了星星':'燈關了';upd()};
-document.getElementById('reset').onclick=()=>{O.innerHTML='';n=0;star=false;lit=false;ST.setAttribute('opacity',0);sv.classList.remove('lit');paintStar();LT.textContent='點燈';setRm(false);H.textContent='選一種裝飾，點樹上掛上去'};
+document.getElementById('starb').onclick=()=>{if(rm)setRm(false);const again=star;sfx('star');if(!again&&lit)SFX.done();star=true;starC=CS[ci];paintStar();ST.style.transition='opacity .6s';ST.setAttribute('opacity',1);H.textContent=again?'星星換好顏色了':'星星放好了，點燈看看';if(!again||lit)upd()};
+document.getElementById('light').onclick=()=>{lit=!lit;sfx(lit?'light':'dark');if(lit&&star)SFX.done();sv.classList.toggle('lit',lit);paintStar();LT.textContent=lit?'關燈':'點燈';if(!rm)H.textContent=lit?'亮起來了，別忘了星星':'燈關了';upd()};
+document.getElementById('reset').onclick=()=>{sfx('reset');O.innerHTML='';n=0;star=false;lit=false;ST.setAttribute('opacity',0);sv.classList.remove('lit');paintStar();LT.textContent='點燈';setRm(false);H.textContent='選一種裝飾，點樹上掛上去'};
 function img(s){return new Promise((ok,no)=>{const i=new Image();i.onload=()=>ok(i);i.onerror=no;i.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(s)})}
 function sp(c,v){if('letterSpacing' in c)c.letterSpacing=v}
-document.getElementById('snap').onclick=async()=>{
+document.getElementById('snap').onclick=async()=>{sfx('snap');
 const box=document.getElementById('shotbox'),ep=document.getElementById('endPair');box.innerHTML='<div style="font-size:12px;margin-top:10px;color:#f3eee3">卡片製作中…</div>';
 try{await document.fonts.load('20px Huninn');
 const W=540,Hh=630,K=2,cv=document.createElement('canvas');cv.width=W*K;cv.height=Hh*K;const c=cv.getContext('2d');c.scale(K,K);
