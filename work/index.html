@@ -93,6 +93,9 @@ h2 span { display: inline-block; padding: 3px 22px; background: rgba(247, 226, 1
 .work h3 { margin: 0; font-size: 17px; font-weight: 400; }
 .work p { margin: 2px 0 0; font-size: 12.5px; line-height: 1.45; color: var(--soft); }
 .work .hot { color: #a86a2a; }
+.more { margin: 14px 0 0; text-align: center; font-size: 15px; }
+.more a { display: inline-block; padding: 4px 16px; border-bottom: 2px dashed var(--line); color: var(--ink); text-decoration: none; }
+.more a:hover { color: var(--red); border-color: var(--red); }
 
 /* 可以做什麼 */
 .ideas { display: grid; gap: 12px; margin: 0; padding: 0; list-style: none; }
@@ -144,9 +147,10 @@ footer a { color: var(--ink); }
 // 記：按寫信（合作頁）、點代表作
 document.addEventListener("click", function (e) {
   if (!e.target.closest) return;
-  var a = e.target.closest('a[href^="mailto:"], a.work'), label;
+  var a = e.target.closest('a[href^="mailto:"], a.work, .more a'), label;
   if (!a) return;
-  label = a.classList.contains("work") ? "合作頁看代表作：" + a.querySelector("h3").textContent.trim() : "按合作邀約：合作頁";
+  label = a.classList.contains("work") ? "合作頁看代表作：" + a.querySelector("h3").textContent.trim()
+    : a.closest(".more") ? "合作頁看全部遊戲" : "按合作邀約：合作頁";
   if (window.goatcounter && window.goatcounter.count) window.goatcounter.count({ path: label, title: label, event: true });
 }, true);
 </script>
@@ -203,6 +207,7 @@ document.addEventListener("click", function (e) {
       <div><h3>半糖少冰！</h3><p class="hot">✨ 最新上架</p><p>照單做手搖飲，菜單、配料都能換成你家的。</p></div>
     </a>
   </div>
+  <p class="more"><a href="https://daisy-play.github.io/" target="_blank" rel="noopener">看全部 17 款遊戲 →</a></p>
 
   <h2><span>可以幫你做什麼</span></h2>
   <ul class="ideas">
