@@ -67,6 +67,9 @@ main {
 .bar-coffee:hover { background: #f7d873; border-color: #f7d873; }
 .bar-coffee:focus-visible { outline: 3px solid #fff3d6; outline-offset: 2px; }
 .c-short { display: none; }
+/* 上方列的合作連結（11/22）：只有字、小小的，不搶咖啡和分享 */
+.bar-work { flex: none; color: #fff3d6; font-size: 14px; text-decoration: none; white-space: nowrap; opacity: .9; }
+.bar-work:hover { opacity: 1; text-decoration: underline; }
 .toast {
   position: fixed; left: 50%; bottom: 28px; transform: translate(-50%, 20px); opacity: 0; pointer-events: none;
   padding: 10px 20px; border-radius: 999px; background: #5a3d2e; color: #fff3d6; font-size: 15px;
@@ -187,7 +190,7 @@ footer { margin-top: 30px; text-align: center; color: var(--soft); }
   .tag, .share, .bar-coffee { font-size: 14px; }
   .share, .bar-coffee { padding: 5px 9px; }
   .bar-actions { gap: 6px; }
-  .t-more, .c-long { display: none; }
+  .t-more, .c-long, .w-ic { display: none; }
   .c-short { display: inline; }
   .games { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
   .game { border-width: 2px; border-radius: 16px; }
@@ -317,10 +320,11 @@ footer { margin-top: 30px; text-align: center; color: var(--soft); }
 <script>
 document.addEventListener("click", function (e) {
   if (!e.target.closest) return;
-  var a = e.target.closest('a[href*="ecpay.com.tw"], a[href*="threads.com"], a[href*="youtube.com"], a[href^="mailto:"], a.work, #share'), label;
+  var a = e.target.closest('a[href*="ecpay.com.tw"], a[href*="threads.com"], a[href*="youtube.com"], a[href^="mailto:"], a.work, a.bar-work, #share'), label;
   if (!a) return;
   // 11/10 加：分享網站、脆、YT 也記
   if (a.id === "share") label = "按分享網站";
+  else if (a.classList.contains("bar-work")) label = "按合作介紹：首頁上方";   // 11/22 加
   else if (a.classList.contains("work")) label = "按合作介紹";   // 11/22 合作邀約改連合作頁
   else if (a.href.indexOf("mailto:") === 0) label = "按合作邀約";   // 11/19 加
   else if (a.href.indexOf("threads.com") >= 0) label = "按脆追蹤";
@@ -332,6 +336,7 @@ document.addEventListener("click", function (e) {
 <div class="topbar">
   <span class="tag"><svg class="paw" viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="16" rx="5.4" ry="4.4"/><ellipse cx="5.4" cy="10" rx="2.2" ry="2.7"/><ellipse cx="9.6" cy="6.2" rx="2.2" ry="2.7"/><ellipse cx="14.4" cy="6.2" rx="2.2" ry="2.7"/><ellipse cx="18.6" cy="10" rx="2.2" ry="2.7"/></svg><span class="tag-text"><span class="t-more">貓咪頻道的</span>紓壓小遊戲</span></span>
   <div class="bar-actions">
+    <a class="bar-work" href="work/"><span class="w-ic" aria-hidden="true">📮 </span>合作</a>
     <a class="bar-coffee" href="https://p.ecpay.com.tw/463A54A" target="_blank" rel="noopener" aria-label="請 Daisy 喝杯咖啡"><span aria-hidden="true">☕</span><span class="c-long">請 Daisy 喝杯咖啡</span><span class="c-short">請喝咖啡</span></a>
     <button class="share" id="share" type="button" aria-label="分享這個網站">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V3M7 8l5-5 5 5"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg>
