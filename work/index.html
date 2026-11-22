@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>和 Daisy 一起做小遊戲｜Daisy的遊戲室</title>
+<meta name="description" content="幫你的品牌、商店或展覽做一款玩 60 秒就記住你的手機小遊戲。">
+<meta property="og:title" content="和 Daisy 一起做小遊戲">
+<meta property="og:description" content="幫你的品牌、商店或展覽做一款玩 60 秒就記住你的手機小遊戲。">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://daisy-play.github.io/work/">
+<meta property="og:image" content="https://daisy-play.github.io/images/color.jpg">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%90%BE%3C/text%3E%3C/svg%3E">
+<!-- 合作介紹頁（2026-11-22）。草稿在 網站\草稿\合作介紹.html；代表作第 4 張每次上架新遊戲時換成最新那款 -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Huninn&display=swap">
+<style>
+:root {
+  --paper: #e6d7bc;
+  --ink: #4f3a2d;
+  --soft: #66503f;
+  --card: #fffaf0;
+  --line: #b99d74;
+  --red: #c9404a;
+  --gold: #f2c94c;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; min-height: 100vh;
+  background: var(--paper) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140' viewBox='0 0 140 140'%3E%3Cg fill='%23d9c7a6' opacity='.55'%3E%3Cellipse cx='34' cy='40' rx='9' ry='7.5'/%3E%3Cellipse cx='23' cy='29' rx='3.6' ry='4.5'/%3E%3Cellipse cx='30.5' cy='23' rx='3.6' ry='4.5'/%3E%3Cellipse cx='38.5' cy='23' rx='3.6' ry='4.5'/%3E%3Cellipse cx='45.5' cy='29' rx='3.6' ry='4.5'/%3E%3Cellipse cx='104' cy='110' rx='9' ry='7.5'/%3E%3Cellipse cx='93' cy='99' rx='3.6' ry='4.5'/%3E%3Cellipse cx='100.5' cy='93' rx='3.6' ry='4.5'/%3E%3Cellipse cx='108.5' cy='93' rx='3.6' ry='4.5'/%3E%3Cellipse cx='115.5' cy='99' rx='3.6' ry='4.5'/%3E%3C/g%3E%3C/svg%3E");
+  color: var(--ink);
+  font-family: "Huninn", "PingFang TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
+  line-height: 1.65;
+}
+.topbar {
+  position: sticky; top: 0; z-index: 20;
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  padding: 10px 20px; background: #5a3d2e; color: #fff3d6;
+}
+.topbar a { color: #fff3d6; text-decoration: none; font-size: 15px; }
+.topbar .back { display: inline-flex; align-items: center; gap: 6px; }
+.topbar .mail { padding: 5px 14px; border-radius: 12px; background: var(--gold); color: var(--ink); white-space: nowrap; }
+main { max-width: 880px; margin: 0 auto; padding: 28px 20px 40px; }
+
+/* 開頭 */
+header { text-align: center; }
+.plaque {
+  position: relative; display: inline-block; margin-top: 22px; padding: 14px 32px 12px;
+  background: var(--red); border-radius: 24px; box-shadow: 0 5px 0 #9e2f37, 0 12px 20px rgba(79, 58, 45, .18);
+}
+.plaque::after { content: ""; position: absolute; inset: 7px; border: 2px dashed rgba(255, 243, 214, .75); border-radius: 17px; pointer-events: none; }
+.ear { position: absolute; top: -20px; border-left: 21px solid transparent; border-right: 21px solid transparent; border-bottom: 28px solid var(--red); }
+.ear::after { content: ""; position: absolute; left: -9px; top: 9px; border-left: 9px solid transparent; border-right: 9px solid transparent; border-bottom: 13px solid #f0a3a8; }
+.ear.l { left: 22px; transform: rotate(-14deg); }
+.ear.r { right: 22px; transform: rotate(14deg); }
+h1 { margin: 0; font-size: clamp(26px, 6vw, 36px); letter-spacing: .08em; line-height: 1.25; color: #fff3d6; text-shadow: 0 2px 0 rgba(120, 30, 38, .35); }
+.nb { display: inline-block; }
+.lead { margin: 18px auto 0; max-width: 560px; font-size: 17px; }
+.chips { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin: 14px 0 0; padding: 0; list-style: none; }
+.chips li { padding: 3px 14px; border: 2px solid var(--line); border-radius: 999px; background: var(--card); font-size: 14px; }
+
+/* 小標題：紙膠帶 */
+h2 { margin: 40px 0 16px; text-align: center; font-size: 21px; font-weight: 400; letter-spacing: .1em; }
+h2 span { display: inline-block; padding: 3px 22px; background: rgba(247, 226, 160, .93); box-shadow: 0 2px 4px rgba(79, 58, 45, .15); transform: rotate(-2deg); }
+
+/* 數字 */
+.stats { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; }
+@media (min-width: 560px) { .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.stat { display: flex; align-items: center; gap: 14px; padding: 14px 16px; border: 3px solid var(--line); border-radius: 16px; background: var(--card); box-shadow: 0 4px 0 rgba(185, 157, 116, .55); }
+/* 數字旁邊的小圖 */
+.pic { flex: none; width: 68px; height: 68px; border-radius: 14px; border: 2px solid var(--line); object-fit: cover; }
+.pic.emo { display: flex; align-items: center; justify-content: center; background: #f7e2a0; font-size: 32px; }
+.pic.stack { position: relative; border: 0; }
+.pic.stack img { position: absolute; width: 50px; height: 42px; border-radius: 8px; border: 2px solid var(--card); object-fit: cover; box-shadow: 0 2px 4px rgba(79, 58, 45, .2); }
+.pic.stack img:nth-child(1) { left: 0; top: 2px; transform: rotate(-8deg); }
+.pic.stack img:nth-child(2) { left: 16px; top: 14px; transform: rotate(5deg); }
+.pic.stack img:nth-child(3) { left: 8px; top: 26px; transform: rotate(-2deg); }
+.stat b { display: block; font-size: 28px; line-height: 1.2; color: var(--red); }
+.stat b small { font-size: 16px; }
+.stat p { margin: 6px 0 0; font-size: 14px; line-height: 1.45; }
+.note { margin: 10px 0 0; text-align: center; font-size: 12.5px; color: var(--soft); }
+
+/* 代表作 */
+.works { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+@media (min-width: 720px) { .works { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+.work { display: flex; flex-direction: column; border: 3px solid var(--line); border-radius: 16px; overflow: hidden; background: var(--card); color: inherit; text-decoration: none; box-shadow: 0 4px 0 rgba(185, 157, 116, .55); transition: transform .18s ease, border-color .18s ease; }
+.work:hover { transform: translateY(-3px); border-color: var(--red); }
+.work img { display: block; width: 100%; height: auto; aspect-ratio: 720 / 597; }
+.work div { padding: 9px 11px 11px; }
+.work h3 { margin: 0; font-size: 17px; font-weight: 400; }
+.work p { margin: 2px 0 0; font-size: 12.5px; line-height: 1.45; color: var(--soft); }
+.work .hot { color: #a86a2a; }
+
+/* 可以做什麼 */
+.ideas { display: grid; gap: 12px; margin: 0; padding: 0; list-style: none; }
+@media (min-width: 720px) { .ideas { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.ideas li { display: flex; gap: 12px; align-items: flex-start; padding: 14px 16px; border: 2px dashed var(--line); border-radius: 16px; background: rgba(255, 250, 240, .75); }
+.ideas .ic { flex: none; width: 44px; height: 44px; border-radius: 50%; background: var(--card); border: 2px solid var(--line); display: flex; align-items: center; justify-content: center; font-size: 22px; }
+.ideas h3 { margin: 0; font-size: 17px; font-weight: 400; }
+.ideas p { margin: 2px 0 0; font-size: 14px; line-height: 1.5; color: var(--soft); }
+
+/* 流程 */
+.steps { counter-reset: s; display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
+.steps li { counter-increment: s; position: relative; padding: 12px 16px 12px 58px; border-radius: 16px; background: var(--card); border: 2px solid var(--line); font-size: 15px; }
+.steps li::before { content: counter(s); position: absolute; left: 14px; top: 50%; transform: translateY(-50%); width: 32px; height: 32px; border-radius: 50%; background: var(--red); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 16px; }
+.steps b { font-weight: 400; color: var(--red); }
+
+/* 關於 Daisy */
+.about { display: flex; gap: 16px; align-items: center; padding: 18px; border-radius: 18px; background: var(--card); border: 3px solid var(--line); }
+.about .art { flex: none; margin: 0; text-align: center; }
+.about .art img { display: block; width: 120px; height: 120px; border-radius: 50%; border: 3px solid var(--line); object-fit: cover; }
+.about .art figcaption { margin-top: 4px; font-size: 12px; color: var(--soft); }
+.about p { margin: 0; font-size: 15px; }
+.about .more { margin-top: 8px; }
+.about .more a { color: var(--red); }
+.pic.white { background: #fff; }
+
+/* 來信 */
+.cta { margin-top: 40px; padding: 26px 18px; border-radius: 22px; background: #5a3d2e; color: #fff3d6; text-align: center; }
+.cta h2 { margin: 0 0 6px; color: #fff3d6; }
+.cta h2 span { background: none; box-shadow: none; padding: 0; transform: none; }
+.cta p { margin: 0 0 16px; font-size: 15px; }
+.cta a.btn { display: inline-block; padding: 10px 26px; border-radius: 999px; background: var(--gold); color: var(--ink); font-size: 17px; text-decoration: none; box-shadow: 0 3px 0 #b8902a; }
+.cta .addr { display: block; margin-top: 10px; font-size: 13px; opacity: .8; user-select: all; }
+footer { margin-top: 26px; text-align: center; font-size: 13px; color: var(--soft); }
+footer a { color: var(--ink); }
+
+@media (max-width: 559px) {
+  main { padding: 20px 14px 32px; }
+  .topbar { padding: 8px 12px; }
+  .lead { font-size: 16px; }
+  .stat b { font-size: 24px; }
+  h2 { margin-top: 34px; font-size: 19px; }
+  .about { flex-direction: column; text-align: center; }
+}
+</style>
+</head>
+<body>
+<script data-goatcounter="https://daisy-play.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
+<script>
+// 記：按寫信（合作頁）、點代表作
+document.addEventListener("click", function (e) {
+  if (!e.target.closest) return;
+  var a = e.target.closest('a[href^="mailto:"], a.work'), label;
+  if (!a) return;
+  label = a.classList.contains("work") ? "合作頁看代表作：" + a.querySelector("h3").textContent.trim() : "按合作邀約：合作頁";
+  if (window.goatcounter && window.goatcounter.count) window.goatcounter.count({ path: label, title: label, event: true });
+}, true);
+</script>
+<div class="topbar">
+  <a class="back" href="https://daisy-play.github.io/">← Daisy的遊戲室</a>
+  <a class="mail" href="mailto:cat.studio.2027@gmail.com?subject=%E5%B0%8F%E9%81%8A%E6%88%B2%E5%90%88%E4%BD%9C%E9%82%80%E7%B4%84">📮 來信聊聊</a>
+</div>
+
+<main>
+  <header>
+    <div class="plaque">
+      <span class="ear l" aria-hidden="true"></span><span class="ear r" aria-hidden="true"></span>
+      <h1><span class="nb">和 Daisy</span> <span class="nb">一起做小遊戲</span></h1>
+    </div>
+    <p class="lead">幫你的品牌、商店或展覽，做一款<strong>玩 60 秒就記住你</strong>的手機小遊戲。</p>
+    <ul class="chips">
+      <li>點了就能玩</li><li>不用下載、不用登入</li><li>一根手指玩</li><li>手繪貓咪畫風</li>
+    </ul>
+  </header>
+
+  <h2><span>大家都在玩</span></h2>
+  <div class="stats">
+    <div class="stat"><img class="pic" src="../images/work-threads.jpg" alt="" width="300" height="300"><div><b>99.1<small> 萬</small></b><p>Threads 過去 30 天<br>貼文瀏覽次數</p></div></div>
+    <div class="stat"><img class="pic" src="../images/color.jpg" alt="" width="720" height="597"><div><b>15<small> 萬+</small></b><p>「調色調調看」<br>一篇貼文的瀏覽</p></div></div>
+    <div class="stat"><img class="pic" src="../images/work-colorplay.jpg" alt="" width="320" height="273"><div><b>2.4<small> 萬</small></b><p>人次玩過<br>「調色調調看」</p></div></div>
+    <div class="stat"><span class="pic stack" aria-hidden="true"><img src="../images/stamp.jpg" alt=""><img src="../images/blocks.jpg" alt=""><img src="../images/boba.jpg" alt=""></span><div><b>17<small> 款</small></b><p>已上架遊戲<br>每週新上 3 款</p></div></div>
+  </div>
+  <p class="note">Threads 官方數據與網站計數・2026 年 11 月</p>
+
+  <h2><span>代表作</span></h2>
+  <div class="works">
+    <a class="work" href="https://daisy-play.github.io/color/" target="_blank" rel="noopener">
+      <img src="../images/color.jpg" width="720" height="597" alt="拿調色盤的藝術貓和顏料店牌子、色票和顏料罐">
+      <div><h3>調色調調看</h3><p class="hot">🔥 Threads 15 萬+ 瀏覽</p><p>考眼力：調出跟色卡一樣的顏色，看你幾 % 準。</p></div>
+    </a>
+    <a class="work" href="https://daisy-play.github.io/stamp/" target="_blank" rel="noopener">
+      <img src="../images/stamp.jpg" width="720" height="597" alt="戴漁夫帽的旅遊貓和五枚縣市紀念章">
+      <div><h3>蓋好蓋滿！</h3><p class="hot">🔥 Threads 7 萬+ 瀏覽</p><p>全台 22 縣市紀念章，地方特色變成關卡。</p></div>
+    </a>
+    <a class="work" href="https://daisy-play.github.io/blocks/" target="_blank" rel="noopener">
+      <img src="../images/blocks.jpg" width="720" height="597" alt="戴耳機的英語貓胖橘，看著吊車把發光的金色字母積木放到一疊英文字母積木上">
+      <div><h3>積木疊疊樂！</h3><p class="hot">🔥 Threads 2.8 萬+ 瀏覽</p><p>邊玩邊學英文單字，適合教育、親子主題。</p></div>
+    </a>
+    <a class="work" href="https://daisy-play.github.io/boba/" target="_blank" rel="noopener">
+      <img src="../images/boba.jpg" width="720" height="597" alt="英語貓胖橘在手搖飲店櫃台後面，旅遊貓客人說 Half sugar, less ice!">
+      <div><h3>半糖少冰！</h3><p class="hot">✨ 最新上架</p><p>照單做手搖飲，菜單、配料都能換成你家的。</p></div>
+    </a>
+  </div>
+
+  <h2><span>可以幫你做什麼</span></h2>
+  <ul class="ideas">
+    <li><span class="ic" aria-hidden="true">🧋</span><div><h3>品牌主題遊戲</h3><p>你的產品變成遊戲裡的道具和關卡，玩完就記得你家有什麼。</p></div></li>
+    <li><span class="ic" aria-hidden="true">🎪</span><div><h3>活動、展覽、市集限定</h3><p>現場掃 QR code 就能玩，分數截圖換小禮物，排隊也不無聊。</p></div></li>
+    <li><span class="ic" aria-hidden="true">🆕</span><div><h3>新品上市</h3><p>用一款小遊戲介紹新口味、新商品，比一張海報更讓人想分享。</p></div></li>
+    <li><span class="ic" aria-hidden="true">🐾</span><div><h3>吉祥物出場</h3><p>用 Daisy 手繪的貓，或請你的吉祥物當主角。</p></div></li>
+  </ul>
+
+  <h2><span>合作流程</span></h2>
+  <ol class="steps">
+    <li><b>來信</b>告訴我們你的品牌、想讓大家記住什麼</li>
+    <li>Daisy 提 <b>2～3 個玩法</b>給你選</li>
+    <li>做好<b>試玩版</b>，一起玩、一起改</li>
+    <li><b>上線</b>：放在你的網站或活動頁，也能在 Daisy的遊戲室上架、發文介紹</li>
+  </ol>
+
+  <h2><span>關於 Daisy</span></h2>
+  <div class="about">
+    <figure class="art">
+      <img src="../images/work-pudding.jpg" alt="Daisy 用紙做的焦糖布丁，放在紙盤上、旁邊有紙湯匙" width="360" height="360">
+      <figcaption>Daisy 的紙雕布丁</figcaption>
+    </figure>
+    <div>
+      <p>Daisy 是紙藝術家，在社群分享紙作品。她同時經營藝術貓、旅遊貓、手作貓、英語貓四個貓頻道；遊戲裡的貓都是她的角色，每一款都是原創玩法：題目、畫面和難度由 Daisy 決定，製作時用 AI 協助，所以試玩版出得快，想改也改得快。</p>
+    </div>
+  </div>
+
+  <div class="cta">
+    <h2><span>想讓更多人記住你？</span></h2>
+    <p>費用依內容報價，先來信聊聊你的想法！</p>
+    <a class="btn" href="mailto:cat.studio.2027@gmail.com?subject=%E5%B0%8F%E9%81%8A%E6%88%B2%E5%90%88%E4%BD%9C%E9%82%80%E7%B4%84">📮 寫信給 Daisy</a>
+    <span class="addr">cat.studio.2027@gmail.com</span>
+  </div>
+
+  <footer><a href="https://daisy-play.github.io/">回到 Daisy的遊戲室玩遊戲 →</a></footer>
+</main>
+</body>
+</html>
