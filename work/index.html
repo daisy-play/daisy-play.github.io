@@ -150,7 +150,7 @@ document.addEventListener("click", function (e) {
   var a = e.target.closest('a[href^="mailto:"], a.work, .more a'), label;
   if (!a) return;
   label = a.classList.contains("work") ? "合作頁看代表作：" + a.querySelector("h3").textContent.trim()
-    : a.closest(".more") ? "合作頁看全部遊戲" : "按合作邀約：合作頁";
+    : a.closest(".more") ? (a.href.indexOf("threads.com") > -1 ? "合作頁看調色脆文" : "合作頁看全部遊戲") : "按合作邀約：合作頁";
   if (window.goatcounter && window.goatcounter.count) window.goatcounter.count({ path: label, title: label, event: true });
 }, true);
 </script>
@@ -179,6 +179,7 @@ document.addEventListener("click", function (e) {
     <div class="stat"><span class="pic stack" aria-hidden="true"><img src="../images/stamp.jpg" alt=""><img src="../images/blocks.jpg" alt=""><img src="../images/boba.jpg" alt=""></span><div><b>17<small> 款</small></b><p>已上架遊戲<br>每週新上 3 款</p></div></div>
   </div>
   <p class="note">Threads 官方數據與網站計數・2026 年 11 月</p>
+  <p class="more"><a href="https://www.threads.com/@daisy._.log/post/DfhVZrLERzF" target="_blank" rel="noopener">看「調色調調看」那篇 Threads →</a></p>
 
   <h2><span>代表作</span></h2>
   <div class="works">
