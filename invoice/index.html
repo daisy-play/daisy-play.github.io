@@ -183,15 +183,15 @@ document.addEventListener("click", function (e) {
       <div class="hd"><span>生活貓對獎單</span><b>本期對獎結果</b><span>09-10月</span></div>
       <div class="bd" id="sheetBody"></div>
     </div>
-    <div style="display:flex;align-items:center;justify-content:center;gap:26px;margin-top:14px">
-      <div class="stamp" id="title" style="width:132px;height:132px;font-size:24px;transform:rotate(-10deg)"></div>
-      <div class="cat" data-cat="122"></div>
+    <div style="display:flex;align-items:center;justify-content:center;gap:26px;margin-top:10px">
+      <div class="stamp" id="title" style="width:112px;height:112px;font-size:21px;transform:rotate(-10deg)"></div>
+      <div class="cat" data-cat="104"></div>
     </div>
-    <div id="newBest" style="height:24px;margin-top:6px;margin-bottom:10px;font-weight:900;color:var(--red);font-size:17px"></div>
+    <div id="newBest" style="height:24px;margin-top:4px;margin-bottom:8px;font-weight:900;color:var(--red);font-size:17px"></div>
     <div class="tip"><span class="tag" style="font-size:11.5px;padding:1px 8px">生活小提醒</span> 真的中獎：開獎隔月 6 號起、3 個月內要領。載具記得歸戶，中了才會收到通知！</div>
     <div style="flex:1"></div>
-    <button class="big" id="againBtn">再對一次</button>
-    <div style="display:flex;gap:12px;margin-top:16px">
+    <button class="big" id="againBtn" style="margin-top:12px">再對一次</button>
+    <div style="display:flex;gap:12px;margin-top:34px"><!-- 11-25 她說請喝咖啡太容易按到：離再對一次遠一點 -->
       <a class="lt" href="https://p.ecpay.com.tw/463A54A" target="_blank" rel="noopener">☕ 請 Daisy 喝咖啡</a>
       <a class="lt siteMore" href="../">玩其他遊戲</a>
     </div>
@@ -212,7 +212,7 @@ function fit() {
   inner.style.transform = `scale(${SC})`; inner.style.height = IH + "px";
   const extra = Math.max(0, IH - 800);
   inner.style.setProperty("--gapA", (34 + extra * .25) + "px");
-  inner.style.setProperty("--gapB", (24 + extra * .3) + "px");
+  inner.style.setProperty("--gapB", (22 + extra * .3) + "px");
   inner.style.setProperty("--stackH", (190 + extra * .25) + "px");
   // 開始畫面：按鈕放在地板上，中間多出來的空位分給上面、發票堆（放大）、說明卡上面（11-25 她說中間空一大塊）
   const gap = $("startGap");
