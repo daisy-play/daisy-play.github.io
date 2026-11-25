@@ -1,0 +1,413 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<title>對發票囉！</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@500;700;900&display=swap">
+<style>
+:root{ --bg:#efe4cf; --paper:#fbf6ea; --ink:#2d2622; --red:#c8393b; --teal:#3c8582; --teal2:#9cc8c2; --gold:#e9b53b; --brown:#6b4a35; --mute:#8b7d6e; }
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:#4a3528;overflow:hidden;overscroll-behavior:none}
+body{display:flex;justify-content:center;font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;color:var(--ink);
+  -webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none}
+button{font-family:inherit;color:inherit;cursor:pointer}
+#stage{position:relative;width:100%;max-width:56vh;max-width:56dvh;height:100vh;height:100dvh;overflow:hidden;background:var(--bg)}
+#inner{position:absolute;left:0;top:0;width:450px;transform-origin:0 0}
+/* 背景：鐵窗花、紙紋、地板 */
+.lat{position:absolute;top:0;bottom:0;width:58px;background-color:#e6dcc6;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='58' height='58'%3E%3Cg fill='none' stroke='%239cc8c2' stroke-width='4'%3E%3Crect width='58' height='58'/%3E%3Ccircle cx='29' cy='29' r='16'/%3E%3Cpath stroke-width='3' d='M29 13Q36 29 29 45Q22 29 29 13ZM13 29Q29 36 45 29Q29 22 13 29Z'/%3E%3C/g%3E%3Cg fill='%23f6efe0' stroke='%239cc8c2' stroke-width='3'%3E%3Ccircle r='6'/%3E%3Ccircle cx='58' r='6'/%3E%3Ccircle cy='58' r='6'/%3E%3Ccircle cx='58' cy='58' r='6'/%3E%3C/g%3E%3C/svg%3E");background-size:58px 58px}
+.lat.l{left:0}.lat.r{right:0}
+.paper{position:absolute;inset:0;pointer-events:none;z-index:40;opacity:.45;mix-blend-mode:multiply;
+  background-image:radial-gradient(rgba(120,90,60,.18) 1px,transparent 1.4px),radial-gradient(rgba(120,90,60,.12) 1px,transparent 1.6px);background-size:7px 7px,11px 11px;background-position:0 0,3px 5px}
+.floor{position:absolute;left:0;right:0;bottom:0;height:170px;background:#d9c8a8;border-top:9px solid var(--brown)}
+.floor::after{content:"";position:absolute;inset:0;opacity:.6;background-image:radial-gradient(#b99f78 1.2px,transparent 1.6px),radial-gradient(#c66 1px,transparent 1.4px),radial-gradient(#7a9 1px,transparent 1.4px);
+  background-size:9px 9px,23px 23px,29px 29px;background-position:0 0,5px 7px,13px 3px}
+.scr{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;z-index:5}
+.scr[hidden]{display:none}
+.tag{display:inline-block;background:var(--teal);color:#fff;font-weight:700;font-size:13px;padding:3px 12px;border-radius:12px}
+.big{background:var(--red);color:#fff;font-weight:900;font-size:26px;border:4px solid var(--ink);border-radius:16px;box-shadow:0 6px 0 var(--ink);padding:11px 0;width:250px;transition:transform .08s,box-shadow .08s}
+.big:active,.pick:active{transform:translateY(4px);box-shadow:0 2px 0 var(--ink)}
+.copy{font-size:11.5px;color:#7a6650;font-weight:500}
+.cat{border-radius:50%;flex:none}
+.rb{position:absolute;z-index:30;top:12px;right:12px;width:38px;height:38px;border-radius:50%;border:3px solid var(--ink);background:var(--paper);font-size:17px;display:flex;align-items:center;justify-content:center;padding:0}
+.home{position:absolute;z-index:30;top:10px;left:12px;font-weight:700;font-size:15px;color:var(--teal);text-decoration:none;padding:8px 6px}
+
+/* 發票 */
+.rc{position:relative;background:#fff;border:3px solid var(--ink);border-radius:6px;padding:12px 16px 12px;font-weight:700;box-shadow:0 5px 0 rgba(0,0,0,.15)}
+.rc .h{font-size:13px;text-align:center;letter-spacing:2px}
+.rc .p{font-size:17px;text-align:center;font-weight:900;margin-top:1px}
+.rc .no{white-space:nowrap;font-size:31px;text-align:center;font-weight:900;letter-spacing:1px;margin:2px 0 4px;font-variant-numeric:tabular-nums}
+.rc .no em{font-style:normal;color:var(--red);font-size:42px}
+.rc .meta{font-size:12px;color:#5e534b;display:flex;justify-content:space-between;font-weight:500;line-height:1.55}
+.rc .meta b{font-weight:900;color:var(--ink)}
+.rc .bar{height:26px;margin-top:6px;background:repeating-linear-gradient(90deg,var(--ink) 0 2px,transparent 2px 4px,var(--ink) 4px 5px,transparent 5px 8px,var(--ink) 8px 11px,transparent 11px 12px)}
+.rc .qr{display:flex;gap:12px;justify-content:center;margin-top:7px}
+.rc .qr i{width:44px;height:44px;border:3px solid var(--ink);background:linear-gradient(90deg,var(--ink) 30%,transparent 30% 55%,var(--ink) 55% 70%,transparent 70%) 0 0/14px 14px,#fff}
+.rc.gold{background:#fff7dc;box-shadow:0 0 0 5px var(--gold),0 0 28px 8px rgba(233,181,59,.7)}
+
+/* 遊戲畫面 */
+#top{width:100%;display:flex;justify-content:space-between;align-items:center;padding:12px 62px 0 16px;font-weight:900}
+.pill{background:var(--paper);border:3px solid var(--ink);border-radius:20px;padding:2px 12px;font-size:17px;white-space:nowrap}
+#money{background:var(--gold);font-size:19px;padding:2px 14px;transition:transform .15s}
+#money.bump{transform:scale(1.18)}
+#hearts{font-size:21px;color:var(--red);letter-spacing:1px}
+#hearts span.off{color:#cdbfa8}
+.board{width:402px;margin-top:10px;background:var(--teal);border:4px solid var(--ink);border-radius:12px;color:#fff;padding:7px 14px 9px;box-shadow:0 5px 0 rgba(0,0,0,.2)}
+.board .t{display:flex;justify-content:space-between;align-items:center;font-size:14px;font-weight:700}
+.board .t span{background:#fff;color:var(--teal);border-radius:10px;padding:1px 9px;font-weight:900}
+.board .r{display:flex;align-items:baseline;gap:10px;margin-top:2px}
+.board .r .k{width:58px;font-size:14px;font-weight:700;opacity:.9}
+.board .r .v{font-size:25px;font-weight:900;letter-spacing:2px;font-variant-numeric:tabular-nums}
+.board .r .v em{font-style:normal;background:var(--gold);color:var(--ink);border-radius:5px;padding:0 3px}
+.board .r.s .v{font-size:19px;letter-spacing:1px}
+#desk{position:relative;flex:1;width:100%}
+#rcWrap{position:absolute;left:50%;top:50%;width:282px;transform:translate(-50%,-50%)}
+#rcWrap .rc{transition:transform .28s ease,opacity .28s ease}
+#rcWrap .rc.in{transform:translateX(420px) rotate(14deg)}
+#rcWrap .rc.outL{transform:translateX(-440px) rotate(-16deg);opacity:0}
+#rcWrap .rc.outU{transform:translateY(-120px) scale(.6) rotate(6deg);opacity:0}
+#tbar{height:8px;border-radius:6px;background:rgba(45,38,34,.15);margin-top:10px;overflow:hidden}
+#tbar i{display:block;height:100%;width:100%;background:var(--teal);transform-origin:0 50%}
+#pop{position:absolute;z-index:8;left:50%;top:22%;transform:translate(-50%,-50%) rotate(-6deg) scale(.4);opacity:0;pointer-events:none;
+  background:var(--red);color:#fff;font-weight:900;border:4px solid var(--ink);border-radius:14px;padding:6px 16px;text-align:center;line-height:1.15;box-shadow:0 5px 0 var(--ink);white-space:nowrap;transition:transform .2s cubic-bezier(.3,1.6,.5,1),opacity .2s}
+#pop.on{opacity:1;transform:translate(-50%,-50%) rotate(-6deg) scale(1)}
+#pop.bad{background:#5e534b}
+#pop small{font-size:16px}#pop b{display:block;font-size:31px}
+#catRow{width:100%;display:flex;align-items:center;gap:8px;padding:0 16px;height:74px}
+#say{background:#fff;border:3px solid var(--ink);border-radius:14px;padding:4px 11px;font-weight:900;font-size:15px;max-width:330px}
+#btns{width:100%;display:flex;gap:14px;padding:6px 20px 22px}
+.pick{flex:1;border:4px solid var(--ink);border-radius:16px;box-shadow:0 6px 0 var(--ink);font-weight:900;padding:12px 0;transition:transform .08s,box-shadow .08s}
+#no{background:var(--paper);font-size:21px}
+#yes{background:var(--red);color:#fff;font-size:27px}
+.shake{animation:sh .35s}
+@keyframes sh{20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}
+
+/* 結束 */
+.sheet{width:362px;background:var(--paper);border:5px solid var(--red);border-radius:12px;box-shadow:0 7px 0 rgba(0,0,0,.2);overflow:hidden}
+.sheet .hd{background:var(--red);color:#fff;display:flex;justify-content:space-between;align-items:center;padding:8px 14px}
+.sheet .hd span{font-size:13px;font-weight:700}.sheet .hd b{font-size:24px;font-weight:900}
+.sheet .bd{padding:10px 18px 12px;font-weight:700;font-size:15.5px;line-height:1.8}
+.ln{display:flex;justify-content:space-between}
+.ln.m{color:var(--mute);font-size:14px}.ln.r{color:var(--red)}
+.tot{border-top:3px dashed var(--ink);margin-top:5px;padding-top:4px;display:flex;justify-content:space-between;align-items:baseline}
+.tot b{font-size:36px;font-weight:900;color:var(--red);white-space:nowrap}
+.stamp{border:5px solid var(--red);color:var(--red);font-weight:900;border-radius:50%;display:flex;align-items:center;justify-content:center;text-align:center;line-height:1.1;background:rgba(255,250,240,.85)}
+.tip{width:362px;background:#fffaf0;border:3px solid var(--teal);border-radius:10px;padding:7px 12px;font-size:13.5px;font-weight:700;line-height:1.5}
+.lt{display:inline-flex;align-items:center;white-space:nowrap;border:3px solid var(--teal);color:var(--teal);background:#fff8ea;border-radius:999px;padding:6px 16px;font-size:15px;font-weight:700;text-decoration:none}
+</style>
+<script data-goatcounter="https://daisy-play.goatcounter.com/count" data-goatcounter-settings='{"allow_frame": true}' async src="https://gc.zgo.at/count.js"></script>
+<script>
+document.addEventListener("click", function (e) {
+  if (!e.target.closest || location.hash === "#test") return;
+  var label;
+  if (e.target.closest('a[href*="ecpay.com.tw"]')) label = "按贊助：對發票囉";
+  else if (e.target.closest(".siteMore")) label = "玩其他遊戲：對發票囉";   // 11/18：記下來，才知道多少人按
+  else if (e.target.closest(".recGame")) label = "玩推薦：對發票囉→" + (e.target.closest(".recGame").getAttribute("data-rec") || "首頁");
+  else {
+    var b = e.target.closest("#go,#again,#cardAgain,#startBtn,#againBtn,[data-gc]");
+    if (!b || b.disabled) return;
+    label = "開始玩：對發票囉" + (b.getAttribute("data-gc") || "");   // 11/10：data-gc 加在後面（例：拼豆的慢慢做）
+  }
+  (function send(n) {
+    if (window.goatcounter && window.goatcounter.count) window.goatcounter.count({ path: label, title: label, event: true });
+    else if (n < 20) setTimeout(function () { send(n + 1); }, 500);
+  })(0);
+}, true);
+</script>
+</head>
+<body>
+<div id="stage"><div id="inner">
+  <div class="lat l"></div><div class="lat r"></div><div class="floor"></div>
+  <button class="rb" id="mute" aria-label="聲音開關">🔊</button>
+
+  <!-- 開始畫面 -->
+  <div class="scr" id="startScreen">
+    <a class="home" href="../">‹ 回首頁</a>
+    <div style="height:var(--gapA)"></div>
+    <span class="tag">生活貓｜日常小遊戲</span>
+    <div style="margin-top:12px;width:302px;background:var(--paper);border:5px solid var(--ink);border-radius:10px;padding:12px 0 10px;text-align:center;box-shadow:0 7px 0 var(--ink)">
+      <div style="font-size:52px;font-weight:900;line-height:1;color:var(--red);text-shadow:3px 3px 0 #f2c9c2;white-space:nowrap">對發票囉！</div>
+      <div style="font-size:15.5px;font-weight:700;margin-top:8px">開獎了！一張一張對，看你這期中多少</div>
+    </div>
+    <div style="position:relative;width:300px;height:var(--stackH);margin-top:14px">
+      <div class="rc" style="position:absolute;top:8px;left:-12px;width:186px;transform:rotate(-11deg);padding:10px 12px"><div class="h">電子發票證明聯</div><div class="p">115年09-10月</div><div class="no" style="font-size:22px">KX-5520<em style="font-size:28px">3817</em></div><div class="bar"></div></div>
+      <div class="rc" style="position:absolute;top:0;left:120px;width:186px;transform:rotate(9deg);padding:10px 12px"><div class="h">電子發票證明聯</div><div class="p">115年09-10月</div><div class="no" style="font-size:22px">RB-0094<em style="font-size:28px">6105</em></div><div class="bar"></div></div>
+      <div class="rc" style="position:absolute;top:30px;left:42px;width:212px;transform:rotate(-2deg);padding:10px 12px"><div class="h">電子發票證明聯</div><div class="p">115年09-10月</div><div class="no" style="font-size:24px">TQ-1349<em style="font-size:31px">6105</em></div><div class="meta"><span>2026-10-03</span><span>總計 85</span></div><div class="bar"></div></div>
+      <div class="stamp" style="position:absolute;top:-4px;right:-30px;width:90px;height:90px;font-size:18px;transform:rotate(12deg)">特別獎<br>1000萬</div>
+    </div>
+    <div style="margin-top:6px;width:310px;background:#fffaf0;border:3px solid var(--ink);border-radius:10px;padding:9px 14px;font-size:15px;font-weight:700;line-height:1.65">
+      <div>① 號碼<span style="color:var(--red)">末三碼對中頭獎</span>，就按「中了！」</div>
+      <div>② 對越多碼，獎金越大</div>
+      <div>③ <span style="color:var(--red)">總計 0 元、打統編</span>的，中了也不能領</div>
+    </div>
+    <div style="flex:1"></div>
+    <div style="display:flex;align-items:center;gap:10px">
+      <button class="big" id="startBtn">開始對獎</button>
+      <div class="cat" data-cat="92"></div>
+    </div>
+    <div id="bestLine" style="margin-top:12px;font-size:14px;font-weight:700;color:var(--brown);height:20px"></div>
+    <div class="copy" style="margin:8px 0 10px">© 生活貓 EnjoyLifeCat</div>
+  </div>
+
+  <!-- 遊戲中 -->
+  <div class="scr" id="gameScreen" hidden>
+    <div id="top">
+      <div class="pill" id="clock">⏱ 1:00</div>
+      <div class="pill" id="money">NT$ 0</div>
+      <div id="hearts"></div>
+    </div>
+    <div class="board">
+      <div class="t">本期中獎號碼<span>115年09-10月</span></div>
+      <div class="r s"><div class="k">特別獎</div><div class="v" id="nSp"></div></div>
+      <div class="r s"><div class="k">特獎</div><div class="v" id="nGp"></div></div>
+      <div class="r"><div class="k">頭獎</div><div class="v" id="nH0"></div></div>
+      <div class="r"><div class="k"></div><div class="v" id="nH1"></div></div>
+      <div class="r"><div class="k"></div><div class="v" id="nH2"></div></div>
+    </div>
+    <div id="desk"><div id="rcWrap"></div><div id="pop"></div></div>
+    <div id="catRow"><div class="cat" data-cat="66"></div><div id="say">末三碼對中，就按「中了！」</div></div>
+    <div id="btns"><button class="pick" id="no">沒中，下一張</button><button class="pick" id="yes">中了！</button></div>
+  </div>
+
+  <!-- 結束 -->
+  <div class="scr" id="endScreen" hidden>
+    <div style="height:var(--gapB)"></div>
+    <div class="sheet">
+      <div class="hd"><span>生活貓對獎單</span><b>本期對獎結果</b><span>09-10月</span></div>
+      <div class="bd" id="sheetBody"></div>
+    </div>
+    <div style="display:flex;align-items:center;justify-content:center;gap:26px;margin-top:14px">
+      <div class="stamp" id="title" style="width:132px;height:132px;font-size:24px;transform:rotate(-10deg)"></div>
+      <div class="cat" data-cat="122"></div>
+    </div>
+    <div id="newBest" style="height:24px;margin-top:6px;font-weight:900;color:var(--red);font-size:17px"></div>
+    <div class="tip"><span class="tag" style="font-size:11.5px;padding:1px 8px">生活小提醒</span> 真的中獎：開獎隔月 6 號起、3 個月內要領。載具記得歸戶，中了才會收到通知！</div>
+    <div style="flex:1"></div>
+    <button class="big" id="againBtn">再對一次</button>
+    <div style="display:flex;gap:12px;margin-top:16px">
+      <a class="lt" href="https://p.ecpay.com.tw/463A54A" target="_blank" rel="noopener">☕ 請 Daisy 喝咖啡</a>
+      <a class="lt siteMore" href="../">玩其他遊戲</a>
+    </div>
+    <div class="copy" style="margin:10px 0 10px">© 生活貓 EnjoyLifeCat</div>
+  </div>
+  <div class="paper"></div>
+</div></div>
+
+<script>
+(() => {
+"use strict";
+const $ = (id) => document.getElementById(id);
+const stage = $("stage"), inner = $("inner");
+let SC = 1, IH = 800;
+function fit() {
+  SC = stage.clientWidth / 450; IH = stage.clientHeight / SC;
+  inner.style.transform = `scale(${SC})`; inner.style.height = IH + "px";
+  const extra = Math.max(0, IH - 800);
+  inner.style.setProperty("--gapA", (34 + extra * .25) + "px");
+  inner.style.setProperty("--gapB", (24 + extra * .3) + "px");
+  inner.style.setProperty("--stackH", (190 + extra * .25) + "px");
+}
+addEventListener("resize", fit); fit();
+
+// 生活貓（賓士貓）頭像：黑身白胸、白口鼻和倒 V、黃眼睛、鼻子右上一顆小黑點（遊戲裡不戴雛菊、不拿茄芷袋）
+const CAT = `<svg viewBox="0 0 100 100" width="100%" height="100%"><defs><clipPath id="cc"><circle cx="50" cy="50" r="46"/></clipPath></defs>
+<circle cx="50" cy="50" r="47" fill="#e9b53b" stroke="#2d2622" stroke-width="4"/>
+<g clip-path="url(#cc)"><ellipse cx="50" cy="104" rx="36" ry="30" fill="#2a2420"/><ellipse cx="50" cy="100" rx="15" ry="22" fill="#fbf6ea"/>
+<path d="M21 46 L24 13 L46 29Z M79 46 L76 13 L54 29Z" fill="#2a2420"/><path d="M26 36 L27 21 L38 30Z M74 36 L73 21 L62 30Z" fill="#e89a96"/>
+<ellipse cx="50" cy="52" rx="31" ry="27" fill="#2a2420"/>
+<path d="M50 33 L41 61 Q50 74 59 61Z" fill="#fbf6ea"/><ellipse cx="50" cy="65" rx="15" ry="10.5" fill="#fbf6ea"/>
+<circle cx="37" cy="49" r="6.4" fill="#f2c230" stroke="#2d2622" stroke-width="1.4"/><circle cx="63" cy="49" r="6.4" fill="#f2c230" stroke="#2d2622" stroke-width="1.4"/>
+<circle cx="37.5" cy="50" r="3.2" fill="#2d2622"/><circle cx="63.5" cy="50" r="3.2" fill="#2d2622"/><circle cx="36" cy="48" r="1.2" fill="#fff"/><circle cx="62" cy="48" r="1.2" fill="#fff"/>
+<path d="M46.5 59 L53.5 59 L50 63Z" fill="#e7787a"/><circle cx="53.6" cy="58.6" r="2.3" fill="#2a2420"/>
+<path d="M44.5 66 Q47.3 69 50 66 Q52.7 69 55.5 66" fill="none" stroke="#2d2622" stroke-width="1.6" stroke-linecap="round"/>
+<path d="M34 63 L18 61 M34 66 L19 68 M66 63 L82 61 M66 66 L81 68" stroke="#d9cfc0" stroke-width="1.2"/></g></svg>`;
+document.querySelectorAll("[data-cat]").forEach((d) => { const s = d.dataset.cat; d.style.width = d.style.height = s + "px"; d.innerHTML = CAT; });
+
+// ---------- 聲音 ----------
+let AC = null, muted = false; try { muted = localStorage.getItem("invoice-muted") === "1"; } catch (e) {}
+function au() { if (AC) { if (AC.state === "suspended") AC.resume(); return; } try { AC = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { AC = null; } }
+function tone(f, t0, d, type = "triangle", v = .22) {
+  if (!AC || muted) return; const o = AC.createOscillator(), g = AC.createGain(), t = AC.currentTime + t0;
+  o.type = type; o.frequency.setValueAtTime(f, t); g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(v, t + .01); g.gain.exponentialRampToValueAtTime(.001, t + d);
+  o.connect(g); g.connect(AC.destination); o.start(t); o.stop(t + d + .02);
+}
+const SFX = {
+  ding: (n) => { const b = 880; tone(b, 0, .25); tone(b * 1.5, .08, .35); if (n > 3) tone(b * 2, .16, .4); },
+  big: () => [523, 659, 784, 1047, 1319, 1568].forEach((f, i) => tone(f, i * .09, .5, "square", .12)),
+  bad: () => { tone(180, 0, .25, "sawtooth", .12); tone(140, .1, .3, "sawtooth", .12); },
+  ok: () => tone(660, 0, .12, "sine", .15),
+  slide: () => tone(320, 0, .06, "sine", .06),
+};
+const MB = $("mute"); const drawMute = () => MB.textContent = muted ? "🔇" : "🔊"; drawMute();
+MB.onclick = (e) => { e.stopPropagation(); muted = !muted; try { localStorage.setItem("invoice-muted", muted ? "1" : "0"); } catch (err) {} au(); drawMute(); if (!muted) SFX.ok(); };
+
+// ---------- 號碼 ----------
+const R = (n) => Math.floor(Math.random() * n);
+const d8 = () => String(R(1e8)).padStart(8, "0");
+const LETTERS = "ABCDEFGHJKLMNPQRSTUVWXYZ";
+const prefix = () => LETTERS[R(24)] + LETTERS[R(24)];
+const PRIZE = [null, null, null, ["六獎", 200], ["五獎", 1000], ["四獎", 4000], ["三獎", 10000], ["二獎", 40000], ["頭獎", 200000]];
+let SP, GP, H;
+function draw() {
+  const used = new Set();
+  const pick = () => { let n; do n = d8(); while (used.has(n.slice(5))); used.add(n.slice(5)); return n; };
+  SP = pick(); GP = pick(); H = [pick(), pick(), pick()];
+  $("nSp").textContent = SP; $("nGp").textContent = GP;
+  H.forEach((h, i) => $("nH" + i).innerHTML = h.slice(0, 5) + `<em>${h.slice(5)}</em>`);
+}
+function prizeOf(n) {
+  if (n === SP) return { name: "特別獎", k: 8, v: 10000000 };
+  if (n === GP) return { name: "特獎", k: 8, v: 2000000 };
+  let best = 0;
+  for (const h of H) { let k = 0; while (k < 8 && n[7 - k] === h[7 - k]) k++; best = Math.max(best, k); }
+  return best >= 3 ? { name: PRIZE[best][0], k: best, v: PRIZE[best][1] } : null;
+}
+function mkWin() {
+  const h = H[R(3)], r = Math.random(), k = r < .6 ? 3 : r < .85 ? 4 : r < .95 ? 5 : r < .99 ? 6 : 7;
+  let head = String(R(10 ** (8 - k))).padStart(8 - k, "0").split("");
+  const j = 8 - k - 1; if (head[j] === h[j]) head[j] = String((+h[j] + 1 + R(8)) % 10);
+  return head.join("") + h.slice(8 - k);
+}
+function mkNear() {   // 末三碼差一點點：換一個數字或前後對調
+  for (let t = 0; t < 30; t++) {
+    const h = H[R(3)], s = h.slice(5).split("");
+    if (Math.random() < .5) { const i = R(3); s[i] = String((+s[i] + 1 + R(8)) % 10); } else { const i = R(2); [s[i], s[i + 1]] = [s[i + 1], s[i]]; }
+    const n = String(R(1e5)).padStart(5, "0") + s.join("");
+    if (!prizeOf(n)) return n;
+  }
+  return mkLose();
+}
+function mkLose() { let n; do n = d8(); while (prizeOf(n)); return n; }
+
+// ---------- 遊戲 ----------
+const GAME_SEC = 60;
+let st = null;
+const fmt = (v) => v.toLocaleString("en-US");
+function setHearts() { $("hearts").innerHTML = [0, 1, 2].map((i) => `<span class="${i < st.hearts ? "" : "off"}">♥</span>`).join(""); }
+function setMoney() { const m = $("money"); m.textContent = "NT$ " + fmt(st.money); m.classList.remove("bump"); void m.offsetWidth; m.classList.add("bump"); setTimeout(() => m.classList.remove("bump"), 160); }
+function say(t) { $("say").textContent = t; }
+function start() {
+  au(); draw();
+  st = { hearts: 3, money: 0, idx: 0, t0: performance.now(), over: false, cur: null, busy: false, wins: {}, caught: 0, missed: 0, wrong: 0, trapsHit: 0, seen: 0, jackpotDone: false, firstTrap: true };
+  $("startScreen").hidden = true; $("endScreen").hidden = true; $("gameScreen").hidden = false;
+  setHearts(); $("money").textContent = "NT$ 0"; say("末三碼對中，就按「中了！」");
+  $("rcWrap").innerHTML = ""; next(); requestAnimationFrame(loop);
+}
+function makeReceipt() {
+  const i = st.idx, r = Math.random();
+  let kind;
+  if (!st.jackpotDone && i >= 12 && Math.random() < .12) kind = "jack";
+  else if (i >= 4 && r < .13) kind = "trap";
+  else if (r < .5) kind = "win";
+  else if (r < .74) kind = "near";
+  else kind = "lose";
+  let no, trap = null;
+  if (kind === "jack") { st.jackpotDone = true; no = Math.random() < .5 ? SP : (Math.random() < .5 ? GP : H[R(3)]); }
+  else if (kind === "win") no = mkWin();
+  else if (kind === "near") no = mkNear();
+  else if (kind === "lose") no = mkLose();
+  else { no = mkWin(); trap = Math.random() < .5 ? "zero" : "tax"; }
+  const amt = trap === "zero" ? 0 : [25, 35, 39, 45, 55, 60, 65, 85, 99, 120, 150, 180, 260, 320, 499][R(15)];
+  const p = prizeOf(no);
+  return { no, pre: prefix(), amt, trap, prize: p, gold: kind === "jack" };
+}
+function rcHTML(c) {
+  const mm = ["09", "10"][R(2)], dd = String(1 + R(30)).padStart(2, "0"), hh = String(8 + R(14)).padStart(2, "0"), mi = String(R(60)).padStart(2, "0");
+  return `<div class="h">電子發票證明聯</div><div class="p">115年09-10月</div>
+  <div class="no">${c.pre}-${c.no.slice(0, 5)}<em>${c.no.slice(5)}</em></div>
+  <div class="meta"><span>2026-${mm}-${dd} ${hh}:${mi}</span><span>隨機碼 ${String(R(1e4)).padStart(4, "0")}</span></div>
+  <div class="meta"><span>賣方 ${d8()}</span><span>${c.amt === 0 ? "<b>總計 0</b>" : "總計 " + c.amt}</span></div>
+  ${c.trap === "tax" ? `<div class="meta"><b>買方 ${d8()}</b><span>（公司統編）</span></div>` : ""}
+  <div class="bar"></div><div class="qr"><i></i><i></i></div>`;
+}
+function limitFor(i) { return Math.max(2.4, 6.2 - i * .17); }
+function next() {
+  if (st.over) return;
+  const c = makeReceipt(); st.cur = c; st.idx++;
+  const el = document.createElement("div"); el.className = "rc in" + (c.gold ? " gold" : ""); el.innerHTML = rcHTML(c);
+  const bar = document.createElement("div"); bar.id = "tbar"; bar.innerHTML = "<i></i>";
+  const w = $("rcWrap"); w.innerHTML = ""; w.appendChild(el); w.appendChild(bar);
+  void el.offsetWidth; el.classList.remove("in"); SFX.slide();
+  c.el = el; c.bar = bar.firstChild; c.t = performance.now() + 280; c.lim = limitFor(st.idx - 1) * 1000;
+  st.busy = false;
+  if (c.gold) say("哇！這張金光閃閃⋯⋯看清楚！");
+  else if (c.trap && st.firstTrap) { st.firstTrap = false; say(c.trap === "zero" ? "等等，看一下總計多少？" : "這張有打統編喔…"); }
+}
+function pop(top, mainTxt, bad) {
+  const p = $("pop"); p.className = bad ? "bad" : ""; p.innerHTML = `<small>${top}</small><b>${mainTxt}</b>`;
+  void p.offsetWidth; p.classList.add("on"); clearTimeout(pop.t); pop.t = setTimeout(() => p.classList.remove("on"), 900);
+}
+function hurt(msg, top) {
+  st.hearts--; setHearts(); SFX.bad(); pop(top, msg, true);
+  $("rcWrap").classList.remove("shake"); void $("rcWrap").offsetWidth; $("rcWrap").classList.add("shake");
+  if (st.hearts <= 0) setTimeout(end, 700);
+}
+function decide(yes, timeout) {
+  if (!st || st.over || st.busy || !st.cur) return;
+  st.busy = true; const c = st.cur; st.seen++;
+  if (yes) {
+    if (c.trap) { st.trapsHit++; hurt(c.trap === "zero" ? "0 元不給獎" : "公司買的不給獎", "中了也不能領！"); say(c.trap === "zero" ? "總計 0 元的發票，中了也不能領" : "打統編＝公司買的，不給獎"); }
+    else if (c.prize) {
+      st.money += c.prize.v; st.wins[c.prize.name] = (st.wins[c.prize.name] || 0) + 1; setMoney();
+      if (c.prize.v >= 200000) { SFX.big(); pop("天啊！！", `${c.prize.name} ${fmt(c.prize.v)}`); say("我是不是在作夢⋯⋯"); }
+      else { SFX.ding(c.prize.k); pop(`叮！對中 ${c.prize.k} 碼`, `${c.prize.name} ${fmt(c.prize.v)}`); say(c.prize.k >= 4 ? "對中好幾碼！" : "小確幸 +1"); }
+    } else { st.wrong++; hurt("沒中啦", "看清楚末三碼"); say("末三碼要三個都一樣才算喔"); }
+    c.el.classList.add("outU");
+  } else {
+    if (c.trap) { st.caught++; SFX.ok(); pop("眼尖！", c.trap === "zero" ? "0 元不給獎" : "統編不給獎"); say("對！這張中了也不能領"); }
+    else if (c.prize) { st.missed++; hurt(`錯過 ${fmt(c.prize.v)}`, timeout ? "來不及了！" : "這張有中耶！"); say("可惜！末三碼明明對得上"); }
+    else if (timeout) say("沒中，下一張～");
+    c.el.classList.add("outL");
+  }
+  st.cur = null;
+  setTimeout(() => { if (!st.over) next(); }, 300);
+}
+function loop(now) {
+  if (!st || st.over) return;
+  const left = Math.max(0, GAME_SEC - (now - st.t0) / 1000);
+  const s = Math.ceil(left); $("clock").textContent = `⏱ ${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
+  $("clock").style.color = left < 10 ? "var(--red)" : "";
+  const c = st.cur;
+  if (c && !st.busy) {
+    const f = Math.max(0, 1 - Math.max(0, now - c.t) / c.lim);
+    c.bar.style.transform = `scaleX(${f})`; c.bar.style.background = f < .3 ? "var(--red)" : "var(--teal)";
+    if (f <= 0) decide(false, true);
+  }
+  if (left <= 0) { end(); return; }
+  requestAnimationFrame(loop);
+}
+const TITLES = [[10000000, "千萬<br>特別獎"], [200000, "頭獎命"], [30000, "發票<br>達人"], [5000, "對獎<br>小達人"], [1, "200 元<br>小確幸"], [0, "槓龜"]];
+function end() {
+  if (st.over) return; st.over = true;
+  setTimeout(() => {
+    $("gameScreen").hidden = true; $("endScreen").hidden = false;
+    const rows = ["特別獎", "特獎", "頭獎", "二獎", "三獎", "四獎", "五獎", "六獎"].filter((n) => st.wins[n]).map((n) => {
+      const v = n === "特別獎" ? 10000000 : n === "特獎" ? 2000000 : PRIZE.find((x) => x && x[0] === n)[1];
+      return `<div class="ln"><span>${n}　${fmt(v)} × ${st.wins[n]}</span><span>${fmt(v * st.wins[n])}</span></div>`;
+    }).join("") || `<div class="ln"><span>這期沒有中獎</span><span>0</span></div>`;
+    const winsN = Object.values(st.wins).reduce((a, b) => a + b, 0);
+    $("sheetBody").innerHTML = `<div class="ln m"><span>對了 ${st.seen} 張</span><span>中獎 ${winsN} 張</span></div>${rows}
+      ${st.caught ? `<div class="ln" style="color:var(--teal)"><span>看穿不給獎的發票</span><span>× ${st.caught}</span></div>` : ""}
+      ${st.trapsHit ? `<div class="ln r"><span>0 元／統編，不給獎</span><span>× ${st.trapsHit}</span></div>` : ""}
+      ${st.missed ? `<div class="ln r"><span>有中卻放走了</span><span>× ${st.missed}</span></div>` : ""}
+      <div class="tot"><span style="font-size:18px">總計</span><b>NT$ ${fmt(st.money)}</b></div>`;
+    const t = TITLES.find((x) => st.money >= x[0]);
+    $("title").innerHTML = `<div><div style="font-size:13px">稱號</div>${t[1]}</div>`;
+    let best = 0; try { best = +localStorage.getItem("invoice-best") || 0; } catch (e) {}
+    if (st.money > best) { try { localStorage.setItem("invoice-best", st.money); } catch (e) {} $("newBest").textContent = best > 0 ? "新紀錄！" : ""; } else $("newBest").textContent = `最高紀錄 NT$ ${fmt(best)}`;
+    showBest();
+  }, 500);
+}
+function showBest() { let b = 0; try { b = +localStorage.getItem("invoice-best") || 0; } catch (e) {} $("bestLine").textContent = b ? `最高紀錄 NT$ ${fmt(b)}` : ""; }
+showBest();
+$("startBtn").onclick = start; $("againBtn").onclick = start;
+$("yes").onclick = () => decide(true); $("no").onclick = () => decide(false);
+addEventListener("keydown", (e) => { if (!st || st.over) return; if (e.key === "ArrowRight" || e.key === "j") decide(true); if (e.key === "ArrowLeft" || e.key === "f") decide(false); });
+if (location.hash === "#test") window.__T = { get st() { return st; }, start, decide, end, H: () => H };
+// 截圖檢查用：?shot=game（停在第一張）／?shot=end（直接結算）
+const shot = new URLSearchParams(location.search).get("shot");
+if (shot) { start(); if (shot === "end") { st.money = 6800; st.wins = { 六獎: 4, 五獎: 2, 四獎: 1 }; st.seen = 31; st.caught = 2; st.trapsHit = 1; st.missed = 1; end(); } else { const f = () => { if (st.cur) { st.cur.lim = 1e9; } else requestAnimationFrame(f); }; f(); } }
+})();
+</script>
+</body>
+</html>
