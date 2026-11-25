@@ -74,11 +74,12 @@ button{font-family:inherit;color:inherit;cursor:pointer}
 #rcWrap .rc.outU{transform:translateY(-120px) scale(.6) rotate(6deg);opacity:0}
 #tbar{height:8px;border-radius:6px;background:rgba(45,38,34,.15);margin-top:10px;overflow:hidden}
 #tbar i{display:block;height:100%;width:100%;background:var(--teal);transform-origin:0 50%}
-#pop{position:absolute;z-index:8;left:50%;top:22%;transform:translate(-50%,-50%) rotate(-6deg) scale(.4);opacity:0;pointer-events:none;
-  background:var(--red);color:#fff;font-weight:900;border:4px solid var(--ink);border-radius:14px;padding:6px 16px;text-align:center;line-height:1.15;box-shadow:0 5px 0 var(--ink);white-space:nowrap;transition:transform .2s cubic-bezier(.3,1.6,.5,1),opacity .2s}
-#pop.on{opacity:1;transform:translate(-50%,-50%) rotate(-6deg) scale(1)}
+/* 中獎框跳在發票下面的條碼那裡，不蓋到號碼（11-25 她說紅框擋住下一張、放最上面不好看；位置在 pop() 裡照發票算） */
+#pop{position:absolute;z-index:8;left:50%;top:70%;transform:translate(-50%,-50%) rotate(-3deg) scale(.4);opacity:0;pointer-events:none;
+  background:var(--red);color:#fff;font-weight:900;border:4px solid var(--ink);border-radius:14px;padding:4px 14px;text-align:center;line-height:1.15;box-shadow:0 5px 0 var(--ink);white-space:nowrap;transition:transform .2s cubic-bezier(.3,1.6,.5,1),opacity .2s}
+#pop.on{opacity:1;transform:translate(-50%,-50%) rotate(-3deg) scale(1)}
 #pop.bad{background:#5e534b}
-#pop small{font-size:16px}#pop b{display:block;font-size:31px}
+#pop small{font-size:14px}#pop b{display:block;font-size:26px}
 #catRow{width:100%;display:flex;align-items:center;gap:8px;padding:0 16px;height:74px}
 #say{background:#fff;border:3px solid var(--ink);border-radius:14px;padding:4px 11px;font-weight:900;font-size:15px;max-width:330px}
 #btns{width:100%;display:flex;gap:14px;padding:6px 20px 22px}
@@ -135,19 +136,19 @@ document.addEventListener("click", function (e) {
       <div style="font-size:52px;font-weight:900;line-height:1;color:var(--red);text-shadow:3px 3px 0 #f2c9c2;white-space:nowrap">對發票囉！</div>
       <div style="font-size:15.5px;font-weight:700;margin-top:8px">開獎了！一張一張對，看你這期中多少</div>
     </div>
-    <div style="position:relative;width:300px;height:var(--stackH);margin-top:14px">
+    <div style="position:relative;width:300px;height:var(--stackH);margin-top:14px;transform:scale(var(--stackS,1));transform-origin:50% 0;margin-bottom:var(--stackMB,0px)">
       <div class="rc" style="position:absolute;top:8px;left:-12px;width:186px;transform:rotate(-11deg);padding:10px 12px"><div class="h">電子發票證明聯</div><div class="p">115年09-10月</div><div class="no" style="font-size:22px">KX-5520<em style="font-size:28px">3817</em></div><div class="bar"></div></div>
       <div class="rc" style="position:absolute;top:0;left:120px;width:186px;transform:rotate(9deg);padding:10px 12px"><div class="h">電子發票證明聯</div><div class="p">115年09-10月</div><div class="no" style="font-size:22px">RB-0094<em style="font-size:28px">6105</em></div><div class="bar"></div></div>
       <div class="rc" style="position:absolute;top:30px;left:42px;width:212px;transform:rotate(-2deg);padding:10px 12px"><div class="h">電子發票證明聯</div><div class="p">115年09-10月</div><div class="no" style="font-size:24px">TQ-1349<em style="font-size:31px">6105</em></div><div class="meta"><span>2026-10-03</span><span>總計 85</span></div><div class="bar"></div></div>
       <div class="stamp" style="position:absolute;top:-4px;right:-30px;width:90px;height:90px;font-size:18px;transform:rotate(12deg)">特別獎<br>1000萬</div>
     </div>
-    <div style="margin-top:6px;width:310px;background:#fffaf0;border:3px solid var(--ink);border-radius:10px;padding:9px 14px;font-size:15px;font-weight:700;line-height:1.65">
+    <div style="margin-top:calc(6px + var(--gapR,0px));width:310px;background:#fffaf0;border:3px solid var(--ink);border-radius:10px;padding:9px 14px;font-size:15px;font-weight:700;line-height:1.65">
       <div>① 號碼<span style="color:var(--red)">末三碼對中頭獎</span>，就按「中了！」</div>
       <div>② 對越多碼，獎金越大</div>
       <div>③ <span style="color:var(--red)">總計 0 元、打統編</span>的，中了也不能領</div>
     </div>
-    <div style="flex:1"></div>
-    <div style="display:flex;align-items:center;gap:10px">
+    <div id="startGap" style="flex:1"></div>
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px">
       <button class="big" id="startBtn">開始對獎</button>
       <div class="cat" data-cat="92"></div>
     </div>
@@ -213,6 +214,20 @@ function fit() {
   inner.style.setProperty("--gapA", (34 + extra * .25) + "px");
   inner.style.setProperty("--gapB", (24 + extra * .3) + "px");
   inner.style.setProperty("--stackH", (190 + extra * .25) + "px");
+  // 開始畫面：按鈕放在地板上，中間多出來的空位分給上面、發票堆（放大）、說明卡上面（11-25 她說中間空一大塊）
+  const gap = $("startGap");
+  if (gap && gap.offsetParent) {
+    for (const k of ["--stackS", "--stackMB", "--gapR"]) inner.style.removeProperty(k);
+    const free = gap.offsetHeight - 22;
+    if (free > 0) {
+      const B = 190 + extra * .25, S = Math.min(1.3, 1 + free * .5 / B);
+      const used = B * (S - 1);
+      inner.style.setProperty("--gapA", (34 + extra * .25 + (free - used) * .45) + "px");
+      inner.style.setProperty("--stackS", S);
+      inner.style.setProperty("--stackMB", used + "px");
+      inner.style.setProperty("--gapR", (free - used) * .4 + "px");
+    }
+  }
 }
 addEventListener("resize", fit); fit();
 
@@ -305,13 +320,13 @@ function makeReceipt() {
   const i = st.idx, r = Math.random();
   let kind;
   if (FT && i === 0) kind = "trap";
-  else if (!st.jackpotDone && i >= 12 && Math.random() < .12) kind = "jack";
+  else if (!st.jackpotDone && i >= 12 && Math.random() < .06) kind = "jack";   // 11-25 她說千萬太常出現：12%→6%
   else if (i >= 4 && r < .13) kind = "trap";
   else if (r < .5) kind = "win";
   else if (r < .74) kind = "near";
   else kind = "lose";
   let no, trap = null;
-  if (kind === "jack") { st.jackpotDone = true; no = Math.random() < .5 ? SP : (Math.random() < .5 ? GP : H[R(3)]); }
+  if (kind === "jack") { st.jackpotDone = true; const j = Math.random(); no = j < .1 ? SP : j < .3 ? GP : H[R(3)]; }   // 特別獎 10%、特獎 20%、頭獎 70%
   else if (kind === "win") no = mkWin();
   else if (kind === "near") no = mkNear();
   else if (kind === "lose") no = mkLose();
@@ -336,14 +351,20 @@ function next() {
   const el = document.createElement("div"); el.className = "rc in" + (c.gold ? " gold" : ""); el.innerHTML = rcHTML(c);
   const bar = document.createElement("div"); bar.id = "tbar"; bar.innerHTML = "<i></i>";
   const w = $("rcWrap"); w.innerHTML = ""; w.appendChild(el); w.appendChild(bar);
-  void el.offsetWidth; el.classList.remove("in"); SFX.slide();
+  void el.offsetWidth; el.classList.remove("in"); SFX.slide(); placePop();
   c.el = el; c.bar = bar.firstChild; c.t = performance.now() + 280; c.lim = limitFor(st.idx - 1) * 1000;
   st.busy = false;
   if (c.gold) say("哇！這張金光閃閃⋯⋯看清楚！");
   else if (c.trap && st.firstTrap) { st.firstTrap = false; say(c.trap === "zero" ? "等等，看一下總計多少？" : "這張有打統編喔…"); }
 }
+// 中獎框放在條碼那一塊（不蓋號碼、總計、買方統編）；下一張滑進來時再對一次位置（打統編的發票條碼比較下面）
+function placePop() {
+  const w = $("rcWrap"), rc = w.querySelector(".rc"), bc = rc && rc.querySelector(".bar");
+  if (bc) $("pop").style.top = (w.offsetTop - w.offsetHeight / 2 + rc.offsetTop + bc.offsetTop + 66) + "px";
+}
 function pop(top, mainTxt, bad) {
   const p = $("pop"); p.className = bad ? "bad" : ""; p.innerHTML = `<small>${top}</small><b>${mainTxt}</b>`;
+  placePop();
   void p.offsetWidth; p.classList.add("on"); clearTimeout(pop.t); pop.t = setTimeout(() => p.classList.remove("on"), 900);
 }
 function hurt(msg, top) {
@@ -399,7 +420,7 @@ function end() {
       ${st.caught ? `<div class="ln" style="color:var(--teal)"><span>看穿不給獎的發票</span><span>× ${st.caught}</span></div>` : ""}
       ${st.trapsHit ? `<div class="ln r"><span>0 元／統編，不給獎</span><span>× ${st.trapsHit}</span></div>` : ""}
       ${st.missed ? `<div class="ln r"><span>有中卻放走了</span><span>× ${st.missed}</span></div>` : ""}
-      <div class="tot"><span style="font-size:18px">總計</span><b>NT$ ${fmt(st.money)}</b></div>`;
+      <div class="tot"><span style="font-size:18px;white-space:nowrap">總計</span><b${st.money >= 1000000 ? ' style="font-size:30px"' : ""}>NT$ ${fmt(st.money)}</b></div>`;
     const t = TITLES.find((x) => st.money >= x[0]);
     $("title").innerHTML = `<div><div style="font-size:13px">稱號</div>${t[1]}</div>`;
     let best = 0; try { best = +localStorage.getItem("invoice-best") || 0; } catch (e) {}
