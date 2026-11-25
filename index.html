@@ -137,7 +137,7 @@ h2 { margin: 0; font-size: 19px; font-weight: 400; line-height: 1.3; }
 footer { margin-top: 30px; text-align: center; color: var(--soft); }
 .yt-title { margin: 0 0 10px; font-size: 16px; color: var(--ink); }
 .channels { display: grid; grid-template-columns: repeat(2, minmax(0, 140px)); justify-content: center; gap: 10px; margin: 0 0 22px; padding: 0; list-style: none; }
-@media (min-width: 560px) { .channels { grid-template-columns: repeat(4, 104px); gap: 8px; margin-bottom: 16px; } .channels a { padding: 5px 10px; font-size: 14px; } .copy { font-size: 13px; } }
+@media (min-width: 560px) { .channels { grid-template-columns: repeat(5, 104px); gap: 8px; margin-bottom: 16px; } .channels a { padding: 5px 10px; font-size: 14px; } .copy { font-size: 13px; } }
 .channels a {
   display: block;
   padding: 8px 16px;
@@ -201,7 +201,7 @@ footer { margin-top: 30px; text-align: center; color: var(--soft); }
   .play { padding: 4px 14px; font-size: 14px; }
   footer { margin-top: 28px; }
   .yt-title { font-size: 16px; }
-  .channels { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
+  .channels { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px; }
   .channels a { padding: 7px 0; font-size: 15px; }
 }
 /* 即將上架：不能點、封面淡一點、貼一條紙膠帶 */
@@ -357,6 +357,16 @@ document.addEventListener("click", function (e) {
 
   <h2 class="soon-title play-title"><span>來玩吧！</span></h2>
   <div class="games">
+    <a class="game" href="sausage/">
+      <img src="images/sausage.jpg" width="720" height="597" alt="烤爐上排滿香腸，下面是炭火，頭綁毛巾、穿紅白格子圍裙的賓士貓老闆站在攤子後面，上面是紅白遮雨棚和燈泡">
+      <div class="info">
+        <span class="by">生活貓<span class="badge new">NEW</span></span>
+        <h2>烤到凌晨三點</h2>
+        <p>夜市香腸攤開張！香腸烤到會翻面、兩面熟就交給客人，要蒜就夾蒜，小心炭火突然變大，撐得到凌晨三點嗎？</p>
+        <span class="play">開始玩</span>
+      </div>
+    </a>
+
     <a class="game" href="sorghum/">
       <img src="images/sorghum.jpg" width="720" height="597" alt="整片高粱田裡紅、黃、綠的高粱穗，後面是紅磚古厝和風獅爺，兩隻麻雀飛來偷吃，戴漁夫帽的旅遊貓拿著相機揮手，旁邊有一袋金門高粱">
       <div class="info">
@@ -370,7 +380,7 @@ document.addEventListener("click", function (e) {
     <a class="game" href="boba/">
       <img src="images/boba.jpg" width="720" height="597" alt="戴耳機和眼鏡、穿綠圍裙的英語貓胖橘在手搖飲店櫃台後面，戴漁夫帽的旅遊貓客人說 Half sugar, less ice!，櫃台上有珍珠奶茶和仙草綠茶">
       <div class="info">
-        <span class="by">英語貓<span class="badge new">NEW</span><span class="badge">🔥 脆 7,400+ 瀏覽</span></span>
+        <span class="by">英語貓<span class="badge new">NEW</span></span>
         <h2>半糖少冰！</h2>
         <p>客人用英文點手搖飲，照單選茶、加料、點糖冰，搖好就出杯！打烊後抽一支今日開運茶。</p>
         <span class="play">開始玩</span>
@@ -380,7 +390,7 @@ document.addEventListener("click", function (e) {
     <a class="game" href="swat/">
       <img src="images/swat.jpg" width="720" height="597" alt="主人在筆電後面專心打字，白襪貓掌把桌上的馬克杯撥出桌外、咖啡噴出來、筆飛起來，旁邊是得意的貓">
       <div class="info">
-        <span class="by">Daisy家的貓<span class="badge new">NEW</span><span class="badge">🔥 脆 4,700+ 瀏覽</span></span>
+        <span class="by">Daisy家的貓</span>
         <h2>趁現在！撥下去</h2>
         <p>主人在忙，趁現在用貓掌把桌上的東西撥下去！主人轉頭時要放手裝乖。</p>
         <span class="play">開始玩</span>
@@ -400,7 +410,7 @@ document.addEventListener("click", function (e) {
     <a class="game" href="market/">
       <img src="images/market.jpg" width="720" height="597" alt="羊毛氈手作貓顧市集攤位，戴高帽的客人貓想買羊毛氈小貓，桌上擺著小熊、手工皂、流蘇鑰匙圈和布包">
       <div class="info">
-        <span class="by">手作貓<span class="badge">🔥 脆 1,600+ 瀏覽</span></span>
+        <span class="by">手作貓</span>
         <h2>手作市集</h2>
         <p>客人貓想要什麼，就從攤位拿給他！價錢越等越高，但等太久客人會生氣走掉喔。</p>
         <span class="play">開始玩</span>
@@ -420,7 +430,7 @@ document.addEventListener("click", function (e) {
     <a class="game" href="xray/">
       <img src="images/xray.jpg" width="720" height="597" alt="戴漁夫帽的旅遊貓和 X 光機，螢幕上照出行李裡的剪刀和偷渡貓">
       <div class="info">
-        <span class="by">旅遊貓<span class="badge">🔥 脆 9,000+ 瀏覽</span></span>
+        <span class="by">旅遊貓</span>
         <h2>過安檢！</h2>
         <p>行李一件件滑過 X 光機，看到剪刀、刀子就往上滑開箱。小心有貓躲在裡面偷渡！</p>
         <span class="play">開始玩</span>
@@ -440,7 +450,7 @@ document.addEventListener("click", function (e) {
     <a class="game" href="beads/">
       <img src="images/beads.jpg" width="720" height="597" alt="手作貓和拼豆板上的三花貓、珍珠奶茶、甜甜圈、小雞拼豆">
       <div class="info">
-        <span class="by">手作貓<span class="badge">🔥 脆 3,700+ 瀏覽</span></span>
+        <span class="by">手作貓</span>
         <h2>拼豆燙燙樂</h2>
         <p>照圖案把拼豆一顆顆放上去，燙一燙就完成！動物、小吃、甜點隨你挑。</p>
         <span class="play">開始玩</span>
@@ -470,7 +480,7 @@ document.addEventListener("click", function (e) {
     <a class="game" href="buttons/">
       <img src="images/buttons.jpg" width="720" height="597" alt="羊毛氈手作貓和彩色鈕扣、線軸">
       <div class="info">
-        <span class="by">手作貓<span class="badge">🔥 脆 8,000+ 瀏覽</span></span>
+        <span class="by">手作貓</span>
         <h2>鈕扣分類盒</h2>
         <p>鈕扣滾下來，照顏色或形狀拖進對的格子。規則會變喔！</p>
         <span class="play">開始玩</span>
@@ -500,7 +510,7 @@ document.addEventListener("click", function (e) {
     <a class="game" href="catch/">
       <img src="images/catch.jpg" width="720" height="597" alt="張大嘴的橘白貓，旁邊掉下來雞腿、魚和飯糰">
       <div class="info">
-        <span class="by">Daisy家的貓</span>
+        <span class="by">Daisy家的貓<span class="badge">🔥 IG 9.6 萬+ 觀看</span></span>
         <h2>吃飯貓接接樂</h2>
         <p>左右滑動，幫貓咪接住掉下來的食物。小心別吃到辣椒！</p>
         <span class="play">開始玩</span>
@@ -530,7 +540,7 @@ document.addEventListener("click", function (e) {
     <a class="game" href="litter/">
       <img src="images/litter.jpg" width="720" height="597" alt="羊毛氈手作貓和裝滿團子的貓砂鏟">
       <div class="info">
-        <span class="by">手作貓<span class="badge">🔥 脆 6,000+ 瀏覽</span></span>
+        <span class="by">手作貓</span>
         <h2>幫貓鏟屎</h2>
         <p>60 秒內撈起砂裡的小團子，丟進垃圾桶，讓貓主子滿意。</p>
         <span class="play">開始玩</span>
@@ -601,8 +611,9 @@ document.addEventListener("click", function (e) {
     <ul class="channels">
       <li><a href="https://www.youtube.com/@ArtCatStudio" target="_blank" rel="noopener">藝術貓</a></li>
       <li><a href="https://www.youtube.com/@TravelCatStudio" target="_blank" rel="noopener">旅遊貓</a></li>
-      <li><a href="https://www.youtube.com/@HandmadeCat" target="_blank" rel="noopener">手作貓</a></li>
       <li><a href="https://www.youtube.com/@EnglishCatStudio" target="_blank" rel="noopener">英語貓</a></li>
+      <li><a href="https://www.youtube.com/@HandmadeCat" target="_blank" rel="noopener">手作貓</a></li>
+      <li><a href="https://www.youtube.com/@EnjoyLifeCat" target="_blank" rel="noopener">生活貓</a></li>
     </ul>
     <p class="threads-wrap"><a class="threads" href="https://www.threads.com/@daisy._.log" target="_blank" rel="noopener">🎮 在 Threads 追蹤新遊戲</a></p>
     <div class="feed">
@@ -665,7 +676,7 @@ document.addEventListener("click", function (e) {
     </div>
     <p class="coffee-wrap"><a class="coffee" href="https://p.ecpay.com.tw/463A54A" target="_blank" rel="noopener">☕ 請 Daisy 喝杯咖啡</a></p>
     <p class="work-wrap"><a class="work" href="work/">📮 想做品牌小遊戲？看看合作方式</a><span class="work-mail">cat.studio.2027@gmail.com</span></p>
-    <p class="copy">© <span>藝術貓 ArtCat</span>・<span>旅遊貓 TravelCat</span>・<span>手作貓 HandmadeCat</span>・<span>英語貓 EnglishCat</span></p>
+    <p class="copy">© <span>藝術貓 ArtCat</span>・<span>旅遊貓 TravelCat</span>・<span>英語貓 EnglishCat</span>・<span>手作貓 HandmadeCat</span>・<span>生活貓 EnjoyLifeCat</span></p>
   </footer>
 </main>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
