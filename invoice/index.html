@@ -22,8 +22,10 @@ button{font-family:inherit;color:inherit;cursor:pointer}
 .floor{position:absolute;left:0;right:0;bottom:0;height:170px;background:#d9c8a8;border-top:9px solid var(--brown)}
 .floor::after{content:"";position:absolute;inset:0;opacity:.6;background-image:radial-gradient(#b99f78 1.2px,transparent 1.6px),radial-gradient(#c66 1px,transparent 1.4px),radial-gradient(#7a9 1px,transparent 1.4px);
   background-size:9px 9px,23px 23px,29px 29px;background-position:0 0,5px 7px,13px 3px}
-.scr{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;z-index:5}
+.scr{position:absolute;inset:0 0 28px 0;display:flex;flex-direction:column;align-items:center;z-index:5}
 .scr[hidden]{display:none}
+/* 警語：開始、對獎、結算都看得到（11-25 她說整場都要） */
+#warn{position:absolute;left:0;right:0;bottom:0;height:28px;z-index:45;background:var(--ink);color:#fbf2df;font-size:12.5px;font-weight:700;display:flex;align-items:center;justify-content:center;white-space:nowrap;letter-spacing:.3px}
 .tag{display:inline-block;background:var(--teal);color:#fff;font-weight:700;font-size:13px;padding:3px 12px;border-radius:12px}
 .big{background:var(--red);color:#fff;font-weight:900;font-size:26px;border:4px solid var(--ink);border-radius:16px;box-shadow:0 6px 0 var(--ink);padding:11px 0;width:250px;transition:transform .08s,box-shadow .08s}
 .big:active,.pick:active{transform:translateY(4px);box-shadow:0 2px 0 var(--ink)}
@@ -40,6 +42,10 @@ button{font-family:inherit;color:inherit;cursor:pointer}
 .rc .no em{font-style:normal;color:var(--red);font-size:42px}
 .rc .meta{font-size:12px;color:#5e534b;display:flex;justify-content:space-between;font-weight:500;line-height:1.55}
 .rc .meta b{font-weight:900;color:var(--ink)}
+.rc .meta b.zero{color:var(--red);font-size:17px}
+.rc .buyer{margin-top:4px;display:flex;align-items:center;gap:7px;border:2.5px dashed var(--red);border-radius:6px;padding:2px 8px;font-size:13px;color:var(--red)}
+.rc .buyer b{font-size:17px;letter-spacing:1px;font-weight:900}
+.rc .buyer i{font-style:normal;margin-left:auto;background:var(--red);color:#fff;border-radius:4px;padding:1px 7px;font-size:12.5px;white-space:nowrap}
 .rc .bar{height:26px;margin-top:6px;background:repeating-linear-gradient(90deg,var(--ink) 0 2px,transparent 2px 4px,var(--ink) 4px 5px,transparent 5px 8px,var(--ink) 8px 11px,transparent 11px 12px)}
 .rc .qr{display:flex;gap:12px;justify-content:center;margin-top:7px}
 .rc .qr i{width:44px;height:44px;border:3px solid var(--ink);background:linear-gradient(90deg,var(--ink) 30%,transparent 30% 55%,var(--ink) 55% 70%,transparent 70%) 0 0/14px 14px,#fff}
@@ -191,6 +197,7 @@ document.addEventListener("click", function (e) {
     <div class="copy" style="margin:10px 0 10px">© 生活貓 EnjoyLifeCat</div>
   </div>
   <div class="paper"></div>
+  <div id="warn">⚠ 遊戲號碼都是虛構的，真正的中獎號碼請以財政部公告為準</div>
 </div></div>
 
 <script>
@@ -293,10 +300,12 @@ function start() {
   setHearts(); $("money").textContent = "NT$ 0"; say("末三碼對中，就按「中了！」");
   $("rcWrap").innerHTML = ""; next(); requestAnimationFrame(loop);
 }
+const FT = new URLSearchParams(location.search).get("trap");   // 截圖檢查用：第一張就是陷阱
 function makeReceipt() {
   const i = st.idx, r = Math.random();
   let kind;
-  if (!st.jackpotDone && i >= 12 && Math.random() < .12) kind = "jack";
+  if (FT && i === 0) kind = "trap";
+  else if (!st.jackpotDone && i >= 12 && Math.random() < .12) kind = "jack";
   else if (i >= 4 && r < .13) kind = "trap";
   else if (r < .5) kind = "win";
   else if (r < .74) kind = "near";
@@ -306,7 +315,7 @@ function makeReceipt() {
   else if (kind === "win") no = mkWin();
   else if (kind === "near") no = mkNear();
   else if (kind === "lose") no = mkLose();
-  else { no = mkWin(); trap = Math.random() < .5 ? "zero" : "tax"; }
+  else { no = mkWin(); trap = FT && i === 0 ? FT : Math.random() < .5 ? "zero" : "tax"; }
   const amt = trap === "zero" ? 0 : [25, 35, 39, 45, 55, 60, 65, 85, 99, 120, 150, 180, 260, 320, 499][R(15)];
   const p = prizeOf(no);
   return { no, pre: prefix(), amt, trap, prize: p, gold: kind === "jack" };
@@ -316,8 +325,8 @@ function rcHTML(c) {
   return `<div class="h">電子發票證明聯</div><div class="p">115年09-10月</div>
   <div class="no">${c.pre}-${c.no.slice(0, 5)}<em>${c.no.slice(5)}</em></div>
   <div class="meta"><span>2026-${mm}-${dd} ${hh}:${mi}</span><span>隨機碼 ${String(R(1e4)).padStart(4, "0")}</span></div>
-  <div class="meta"><span>賣方 ${d8()}</span><span>${c.amt === 0 ? "<b>總計 0</b>" : "總計 " + c.amt}</span></div>
-  ${c.trap === "tax" ? `<div class="meta"><b>買方 ${d8()}</b><span>（公司統編）</span></div>` : ""}
+  <div class="meta"><span>賣方 ${d8()}</span><span>${c.amt === 0 ? "<b class=\"zero\">總計 0 元</b>" : "總計 " + c.amt}</span></div>
+  ${c.trap === "tax" ? `<div class="buyer"><span>買方統編</span><b>${d8()}</b><i>公司報帳</i></div>` : ""}
   <div class="bar"></div><div class="qr"><i></i><i></i></div>`;
 }
 function limitFor(i) { return Math.max(2.4, 6.2 - i * .17); }
@@ -346,7 +355,7 @@ function decide(yes, timeout) {
   if (!st || st.over || st.busy || !st.cur) return;
   st.busy = true; const c = st.cur; st.seen++;
   if (yes) {
-    if (c.trap) { st.trapsHit++; hurt(c.trap === "zero" ? "0 元不給獎" : "公司買的不給獎", "中了也不能領！"); say(c.trap === "zero" ? "總計 0 元的發票，中了也不能領" : "打統編＝公司買的，不給獎"); }
+    if (c.trap) { st.trapsHit++; hurt(c.trap === "zero" ? "0 元發票不給獎" : "打統編不給獎", "號碼有中，但不能領！"); say(c.trap === "zero" ? "總計 0 元的發票，中了也不能領" : "有買方統編＝公司買的，中了也不能領"); }
     else if (c.prize) {
       st.money += c.prize.v; st.wins[c.prize.name] = (st.wins[c.prize.name] || 0) + 1; setMoney();
       if (c.prize.v >= 200000) { SFX.big(); pop("天啊！！", `${c.prize.name} ${fmt(c.prize.v)}`); say("我是不是在作夢⋯⋯"); }
