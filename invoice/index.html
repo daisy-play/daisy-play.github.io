@@ -191,7 +191,7 @@ document.addEventListener("click", function (e) {
     <div class="tip"><span class="tag" style="font-size:11.5px;padding:1px 8px">生活小提醒</span> 真的中獎：開獎隔月 6 號起、3 個月內要領。載具記得歸戶，中了才會收到通知！</div>
     <div style="flex:1"></div>
     <button class="big" id="againBtn" style="margin-top:12px">再對一次</button>
-    <div style="display:flex;gap:12px;margin-top:34px"><!-- 11-25 她說請喝咖啡太容易按到：離再對一次遠一點 -->
+    <div style="display:flex;gap:12px;margin-top:16px">
       <a class="lt" href="https://p.ecpay.com.tw/463A54A" target="_blank" rel="noopener">☕ 請 Daisy 喝咖啡</a>
       <a class="lt siteMore" href="../">玩其他遊戲</a>
     </div>
@@ -411,6 +411,8 @@ function end() {
   if (st.over) return; st.over = true;
   setTimeout(() => {
     $("gameScreen").hidden = true; $("endScreen").hidden = false;
+    // 11-25 她說按「沒中」跳到結算時會順手按到請喝咖啡：結算畫面出來的前 1 秒按了都沒反應
+    const es = $("endScreen"); es.style.pointerEvents = "none"; setTimeout(() => { es.style.pointerEvents = ""; }, 1000);
     const rows = ["特別獎", "特獎", "頭獎", "二獎", "三獎", "四獎", "五獎", "六獎"].filter((n) => st.wins[n]).map((n) => {
       const v = n === "特別獎" ? 10000000 : n === "特獎" ? 2000000 : PRIZE.find((x) => x && x[0] === n)[1];
       return `<div class="ln"><span>${n}　${fmt(v)} × ${st.wins[n]}</span><span>${fmt(v * st.wins[n])}</span></div>`;
