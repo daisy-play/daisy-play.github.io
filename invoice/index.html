@@ -326,7 +326,7 @@ function makeReceipt() {
   else if (r < .74) kind = "near";
   else kind = "lose";
   let no, trap = null;
-  if (kind === "jack") { st.jackpotDone = true; const j = Math.random(); no = j < .1 ? SP : j < .3 ? GP : H[R(3)]; }   // 特別獎 10%、特獎 20%、頭獎 70%
+  if (kind === "jack") { st.jackpotDone = true; const j = Math.random(); no = j < .2 ? SP : j < .4 ? GP : H[R(3)]; }   // 特別獎 20%、特獎 20%、頭獎 60%（11-26 她說千萬高一點點：原本 10%）
   else if (kind === "win") no = mkWin();
   else if (kind === "near") no = mkNear();
   else if (kind === "lose") no = mkLose();
