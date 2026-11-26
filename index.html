@@ -231,6 +231,14 @@ footer { margin-top: 30px; text-align: center; color: var(--soft); }
   color: var(--ink); font-size: 19px; letter-spacing: .12em; white-space: nowrap;
 }
 @media (max-width: 559px) { .tape { padding: 5px 16px; font-size: 16px; } .mystery .tape { top: 15%; } .q { width: 40%; top: 58%; } .soon-title { margin-top: 26px; font-size: 19px; } }
+/* 11/26 問號卡角落的小貼紙（延期、偷偷加開時貼） */
+.sticker {
+  position: absolute; right: 8px; bottom: 10px; transform: rotate(-7deg);
+  padding: 3px 11px; border-radius: 8px; background: #fffaf0; border: 2px solid #e2a0a6;
+  box-shadow: 0 2px 4px rgba(79, 58, 45, .2); color: #b8434c; font-size: 14px; white-space: nowrap;
+}
+.date s { opacity: .6; }
+.date:has(s) { padding: 4px 10px; font-size: 13px; white-space: nowrap; }
 .date {
   margin-top: auto; align-self: flex-start;
   padding: 4px 14px; border-radius: 999px;
@@ -357,6 +365,16 @@ document.addEventListener("click", function (e) {
 
   <h2 class="soon-title play-title"><span>來玩吧！</span></h2>
   <div class="games">
+    <a class="game" href="invoice/">
+      <img src="images/invoice.jpg" width="720" height="597" alt="「對發票囉！」標題牌下面攤著三張電子發票證明聯，中間那張號碼末四碼 6105 是紅字，旁邊蓋著「特別獎 1000萬」紅色印章，右下角是賓士貓生活貓，兩邊是綠色鐵窗花">
+      <div class="info">
+        <span class="by">生活貓<span class="badge new">NEW</span></span>
+        <h2>對發票囉！</h2>
+        <p>發票開獎了！一張一張對號碼，對中就按「中了！」，小心總計 0 元和打統編的，看你這期能中多少？</p>
+        <span class="play">開始玩</span>
+      </div>
+    </a>
+
     <a class="game" href="sausage/">
       <img src="images/sausage.jpg" width="720" height="597" alt="烤爐上排滿香腸，下面是炭火，頭綁毛巾、穿紅白格子圍裙的賓士貓老闆站在攤子後面，上面是紅白遮雨棚和燈泡">
       <div class="info">
@@ -380,7 +398,7 @@ document.addEventListener("click", function (e) {
     <a class="game" href="boba/">
       <img src="images/boba.jpg" width="720" height="597" alt="戴耳機和眼鏡、穿綠圍裙的英語貓胖橘在手搖飲店櫃台後面，戴漁夫帽的旅遊貓客人說 Half sugar, less ice!，櫃台上有珍珠奶茶和仙草綠茶">
       <div class="info">
-        <span class="by">英語貓<span class="badge new">NEW</span></span>
+        <span class="by">英語貓</span>
         <h2>半糖少冰！</h2>
         <p>客人用英文點手搖飲，照單選茶、加料、點糖冰，搖好就出杯！打烊後抽一支今日開運茶。</p>
         <span class="play">開始玩</span>
@@ -551,12 +569,12 @@ document.addEventListener("click", function (e) {
   <h2 class="soon-title"><span>即將上架</span></h2>
   <div class="games">
     <div class="game soon">
-      <div class="mystery" style="--tint:#dfe9f2"><span class="q">?</span><span class="tape">即將上架</span></div>
+      <div class="mystery" style="--tint:#dfe9f2"><span class="q">?</span><span class="tape">即將上架</span><span class="sticker">多縫一天 🧵</span></div>
       <div class="info">
         <span class="by">手作貓</span>
         <h2>神秘新遊戲</h2>
         <p>手作貓拿出了針線盒…上架那天就知道囉！</p>
-        <span class="date">11/26 上架</span>
+        <span class="date"><s>11/26</s> 11/27 上架</span>
         <div class="knock-row"><button class="knock" type="button" data-knock="guest-1126" data-name="手作貓 11/26"><span class="bowl" aria-hidden="true">🥣</span>敲碗</button><span class="knock-n" aria-live="polite"></span></div>
       </div>
     </div>
@@ -584,7 +602,7 @@ document.addEventListener("click", function (e) {
     </div>
 
     <div class="game soon">
-      <div class="mystery" style="--tint:#f4e0e4"><span class="q">?</span><span class="tape">即將上架</span></div>
+      <div class="mystery" style="--tint:#f4e0e4"><span class="q">?</span><span class="tape">即將上架</span><span class="sticker">悄悄安排上架 🤫</span></div>
       <div class="info">
         <span class="by">生活貓</span>
         <h2>神秘新遊戲</h2>
