@@ -146,7 +146,7 @@ body {
   height: calc(var(--u) * 800); width: auto; max-width: 100%; border: calc(var(--u) * 5) solid var(--ink); border-radius: calc(var(--u) * 24);
   box-shadow: 0 calc(var(--u) * 10) 0 rgba(59, 42, 26, .22); -webkit-touch-callout: default; -webkit-user-select: auto; user-select: auto;
 }
-#cardScreen { background: var(--wall); }
+#cardScreen { background: var(--wall); z-index: 2; }   /* 蓋過結算畫面上面的遊戲名和圖（那個有 z-index 1） */
 #cardBack {
   position: absolute; top: calc(var(--u) * 26); left: calc(var(--u) * 24); padding: calc(var(--u) * 10) calc(var(--u) * 16);
   background: none; border: 0; font-family: var(--font); font-size: calc(var(--u) * 34); color: #6c6a94; cursor: pointer;
