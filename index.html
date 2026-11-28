@@ -777,14 +777,14 @@ document.addEventListener("click", function (e) {
     (function () {
       var SPONSORS = [];
       var START = 0;   // 罐子起頭幾杯（11-28 她先說放 8 杯，後來改回 0：還沒人贊助就空的）
-      var GOAL = 30;
+      var GOAL = 10;   // 11-28 她說先 10 杯（原本 30），滿了再往上加
       var cups = START; SPONSORS.forEach(function (s) { cups += s.cups; });
       document.getElementById("jarCups").textContent = cups;
       document.getElementById("jarGoal").textContent = GOAL;
       document.getElementById("jarBar").style.width = Math.min(100, cups / GOAL * 100) + "%";
-      // 咖啡豆：一杯一顆，從罐底往上排
-      var g = document.getElementById("jarBeans"), ns = "http://www.w3.org/2000/svg", per = 6;
-      for (var i = 0; i < Math.min(cups, GOAL); i++) {
+      // 咖啡豆：罐子滿＝30 顆，一杯放 30/GOAL 顆（10 杯時一杯 3 顆），從罐底往上排
+      var g = document.getElementById("jarBeans"), ns = "http://www.w3.org/2000/svg", per = 6, bpc = Math.max(1, Math.round(30 / GOAL));
+      for (var i = 0; i < Math.min(cups, GOAL) * bpc; i++) {
         var row = Math.floor(i / per), col = i % per, x = 24 + col * 14 + (row % 2 ? 7 : 0), y = 122 - row * 11;
         var b = document.createElementNS(ns, "g");
         b.setAttribute("transform", "translate(" + x + " " + y + ") rotate(" + ((i * 47) % 70 - 35) + ")");
