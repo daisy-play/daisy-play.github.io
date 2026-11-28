@@ -773,11 +773,12 @@ document.addEventListener("click", function (e) {
     </div>
     <div class="marquee" aria-label="感謝贊助"><div class="marquee-track" id="thanks"></div></div>
     <script>
-    // 贊助名單：有人贊助，她說暱稱和幾杯，就加一行 { name: "暱稱", cups: 幾杯 }；不想具名的 name 寫 ""。不放假名字、假數字。
+    // 贊助名單：有人贊助，她說暱稱和幾杯，就加一行 { name: "暱稱", cups: 幾杯 }；不想具名的 name 寫 ""。名單不放假名字。
     (function () {
       var SPONSORS = [];
+      var START = 0;   // 罐子起頭幾杯（11-28 她先說放 8 杯，後來改回 0：還沒人贊助就空的）
       var GOAL = 30;
-      var cups = 0; SPONSORS.forEach(function (s) { cups += s.cups; });
+      var cups = START; SPONSORS.forEach(function (s) { cups += s.cups; });
       document.getElementById("jarCups").textContent = cups;
       document.getElementById("jarGoal").textContent = GOAL;
       document.getElementById("jarBar").style.width = Math.min(100, cups / GOAL * 100) + "%";
@@ -790,23 +791,28 @@ document.addEventListener("click", function (e) {
         b.innerHTML = '<ellipse rx="6.5" ry="4.6" fill="#7a4a2c"/><path d="M-5 0 Q0 -2 5 0" stroke="#3f2a1f" stroke-width="1.4" fill="none"/>';
         g.appendChild(b);
       }
-      // 燈條：一次一句，每 2.8 秒往上換下一句（最新的先出來）
+      // 燈條：一次一句，每 2.8 秒往上換下一句。先放贊助人（最新的先），再放網站上真的數字（11-28 她說：餵貓、敲碗、玩遊戲），
+      // 真的數字由下面統計程式讀回來後用 window.addThanks(順序, 句子) 加進來。只放真的，不編名字。
       var esc = function (s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;"); };
-      var msgs = SPONSORS.length
+      var lines = (SPONSORS.length
         ? SPONSORS.slice().reverse().map(function (s) { return "謝謝<b>" + esc(s.name || "一位神秘的朋友 💕") + "</b>請 Daisy 喝 " + s.cups + " 杯咖啡 ☕"; })
-        : ["成為第一個請 Daisy 喝咖啡的人 ☕"];
-      var t = document.getElementById("thanks");
-      t.innerHTML = msgs.concat(msgs.length > 1 ? [msgs[0]] : []).map(function (m, i) { return "<span" + (i >= msgs.length ? ' aria-hidden="true"' : "") + ">" + m + "</span>"; }).join("");
-      // 太長放不下的句子：字自動縮小一點（最小 12px）
-      [].forEach.call(t.children, function (sp) { var f = 15; while (sp.scrollWidth > sp.clientWidth + 1 && f > 12) { f -= .5; sp.style.fontSize = f + "px"; } });
-      if (msgs.length > 1) {
-        var i = 0, H = 48;
-        setInterval(function () {
-          if (document.hidden) return;
-          i++; t.classList.remove("jump"); t.style.transform = "translateY(" + (-i * H) + "px)";
-          if (i === msgs.length) setTimeout(function () { i = 0; t.classList.add("jump"); t.style.transform = "translateY(0)"; }, 700);
-        }, 2800);
+        : ["成為第一個請 Daisy 喝咖啡的人 ☕"]).map(function (h, k) { return { o: k / 100, h: h }; });
+      var t = document.getElementById("thanks"), pos = 0, H = 48;
+      function render() {
+        lines.sort(function (a, b) { return a.o - b.o; });
+        var msgs = lines.map(function (l) { return l.h; });
+        t.innerHTML = msgs.concat(msgs.length > 1 ? [msgs[0]] : []).map(function (m, k) { return "<span" + (k >= msgs.length ? ' aria-hidden="true"' : "") + ">" + m + "</span>"; }).join("");
+        // 太長放不下的句子：字自動縮小一點（最小 11.5px）
+        [].forEach.call(t.children, function (sp) { var f = 15; while (sp.scrollWidth > sp.clientWidth + 1 && f > 11.5) { f -= .5; sp.style.fontSize = f + "px"; } });
+        t.classList.add("jump"); t.style.transform = "translateY(" + (-pos * H) + "px)";
       }
+      window.addThanks = function (order, html) { lines.push({ o: order, h: html }); if (pos >= lines.length) pos = 0; render(); };
+      render();
+      setInterval(function () {
+        if (document.hidden || lines.length < 2) return;
+        pos++; t.classList.remove("jump"); t.style.transform = "translateY(" + (-pos * H) + "px)";
+        if (pos === lines.length) setTimeout(function () { pos = 0; t.classList.add("jump"); t.style.transform = "translateY(0)"; }, 700);
+      }, 2800);
     })();
     </script>
     <p class="coffee-wrap"><a class="coffee" href="https://p.ecpay.com.tw/463A54A" target="_blank" rel="noopener">☕ 請 Daisy 喝杯咖啡</a></p>
@@ -1030,10 +1036,11 @@ document.addEventListener("click", function (e) {
 
   // 玩過人數：遊戲頁打開人數滿 100 就顯示（1.9 萬+、1,200+、600+ 這種往下取整的概數）
   const fmt = (n) => n >= 10000 ? (Math.floor(n / 1000) / 10) + " 萬+" : (Math.floor(n / 100) * 100).toLocaleString() + "+";
-  const getCount = (path) => fetch(cntURL(path))
+  const cntCache = {};   // 同一個網址只抓一次（卡片人數和感謝燈條共用）
+  const getCount = (path) => cntCache[path] || (cntCache[path] = fetch(cntURL(path))
     .then((r) => (r.ok || r.status === 404) ? r.json() : null)
     .then((j) => j && j.count != null ? (parseInt(String(j.count).replace(/\D/g, ""), 10) || 0) : null)
-    .catch(() => null);
+    .catch(() => null));
   document.querySelectorAll("a.game[href]").forEach((a) => {
     const slug = a.getAttribute("href").replace(/\/$/, "");
     getCount("/" + slug + "/").then((n) => {
@@ -1044,6 +1051,21 @@ document.addEventListener("click", function (e) {
       play.parentNode.insertBefore(s, play);
     });
   });
+
+  // 感謝燈條（11-28 她說）：用網站上真的數字說謝謝——以前到現在的敲碗總數、所有遊戲打開總數（餵貓的在貓咪食堂那段）
+  // 下架的問號卡敲碗、首頁沒放卡片的遊戲也算：新的問號卡、新遊戲上首頁會自己加進來；只放試玩網址的新遊戲要加進 ALL_GAMES
+  const OLD_KNOCKS = ["art-1115", "english-1115", "english-1117", "fat-1119", "guest-1120", "guest-1122", "guest-1124", "guest-1126", "guest-1128", "guest-1130", "guest-1201", "guest-1203", "guest-1205", "handmade-1111", "handmade-1116", "handmade-1118", "travel-1113", "travel-1116"];
+  const ALL_GAMES = ["beads", "blocks", "boba", "buttons", "cake", "catch", "cellar", "claim", "color", "corn", "dinner", "distill", "dry", "gift", "invoice", "litter", "market", "meow", "needle", "pack", "paint", "peas", "pop", "sausage", "sew", "shower", "snack", "sorghum", "stamp", "swat", "tree", "xray"];
+  const uniq = (a) => a.filter((x, i) => a.indexOf(x) === i);
+  const sumOf = (paths) => Promise.all(paths.map(getCount)).then((ns) => ns.reduce((a, n) => a + (n || 0), 0));
+  if (window.addThanks) {
+    sumOf(uniq(OLD_KNOCKS.concat([...document.querySelectorAll(".knock")].map((b) => b.dataset.knock))).map((id) => "knock-" + id)).then((tot) => {
+      if (tot > 0) window.addThanks(2, "謝謝大家敲碗<b>" + tot.toLocaleString() + "</b>次，催新遊戲 🥣");
+    });
+    sumOf(uniq(ALL_GAMES.concat([...document.querySelectorAll("a.game[href]")].map((a) => a.getAttribute("href").replace(/\/$/, "")))).map((s) => "/" + s + "/")).then((tot) => {
+      if (tot >= 100) window.addThanks(3, "謝謝<b>" + fmt(tot) + "</b>人次來玩 Daisy 的小遊戲 🎮");   // 各款相加，同一人玩兩款算兩次，所以寫「人次」
+    });
+  }
 
   // 貓咪食堂：點碗 → 倒飯 → 貓走過來吃 → 吃飽說謝謝
   const svg = document.getElementById("feedSvg");
@@ -1173,7 +1195,10 @@ document.addEventListener("click", function (e) {
     const n = (iFed || store.get("feed-cat") === today()) ? Math.max(feedCount, 1) : feedCount;
     if (n > 0) feedN.innerHTML = "已經有 <b>" + n.toLocaleString() + "</b> 人餵過貓";
   };
-  getCount("feed-cat").then((n) => { feedCount = n; showCount(); });
+  getCount("feed-cat").then((n) => {
+    feedCount = n; showCount();
+    if (n > 0 && window.addThanks) window.addThanks(1, "謝謝<b>" + n.toLocaleString() + "</b>位朋友餵過貓 🐟");   // 感謝燈條（11-28）
+  });
   const go = async () => {
     if (st.busy) return;
     st.busy = true;
